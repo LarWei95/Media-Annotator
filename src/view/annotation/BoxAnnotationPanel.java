@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import model.Annotation;
 import model.BaseClassAnnotation;
 import model.BoxAnnotation;
+import model.MapClassAnnotation;
 import view.elements.ChangeEmitter;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -15,14 +16,19 @@ import java.text.NumberFormat;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField;
 import javax.swing.JToggleButton;
+
+import control.ViewAnnotationLink;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
 class CoordinateChangeListener implements PropertyChangeListener {
 	private BoxAnnotationPanel panel;
+	protected boolean active;
 	
 	public CoordinateChangeListener (BoxAnnotationPanel panel) {
 		this.panel = panel;
+		this.active = true;
 	}
 
 	@Override
@@ -52,9 +58,9 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 	
 	private BoxAnnotation boxAnnotation;
 
-	public BoxAnnotationPanel(ChangeEmitter changeEmitter) {
-		super(changeEmitter);
-		this.annotationPanel = new MapClassAnnotationPanel(this, MappableAnnotationPanel.TYPE_BASECLASS);
+	public BoxAnnotationPanel(ChangeEmitter changeEmitter, ViewAnnotationLink viewAnnotationLink) {
+		super(changeEmitter, viewAnnotationLink);
+		this.annotationPanel = new MapClassAnnotationPanel(this, viewAnnotationLink, MappableAnnotationPanel.TYPE_BASECLASS);
 		this.boxAnnotation = null;
 		
 		this.xminFieldFormat = NumberFormat.getNumberInstance();
@@ -162,9 +168,28 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		field.setValue(0);
 	}
 	
+	public void setFieldListenersActive (boolean active) {
+		this.xminListener.active = active;
+		this.yminListener.active = active;
+		this.xmaxListener.active = active;
+		this.ymaxListener.active = active;
+	}
+	
+	public void setCoordinates (int xmin, int ymin, int xmax, int ymax) {
+		this.setFieldListenersActive(false);
+		
+		this.xminField.setValue(xmin);
+		this.yminField.setValue(ymin);
+		this.xmaxField.setValue(xmax);
+		this.ymaxField.setValue(ymax);
+		
+		this.setFieldListenersActive(true);
+		this.forwardChange();
+	}
+	
 	@Override
 	public void updateOnForwardedChange() {
-		BaseClassAnnotation baseClassAnnotation = (BaseClassAnnotation)this.annotationPanel.getAnnotation();
+		MapClassAnnotation baseClassAnnotation = (MapClassAnnotation)this.annotationPanel.getAnnotation();
 		
 		if (baseClassAnnotation != null) {
 			int xmin = -1;
@@ -216,5 +241,9 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		return this.boxAnnotation;
 	}
 
-
+	@Override
+	public void fillActivePanelContainer(ActivePanelContainer activePanelContainer) {
+		activePanelContainer.setBoxAnnotationPanel(this);
+		this.annotationPanel.fillActivePanelContainer(activePanelContainer);
+	}
 }

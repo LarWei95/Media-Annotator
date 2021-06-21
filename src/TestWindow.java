@@ -13,10 +13,14 @@ import javax.swing.JPanel;
 import model.Annotation;
 import com.github.cliftonlabs.json_simple.Jsonable;
 
+import control.RectangleEditor;
+import control.ViewAnnotationLink;
+
 public class TestWindow {
 
 	private JFrame frame;	
 	private MapClassAnnotationPanel panel;
+	private RectangleEditor rectEditor;
 
 	/**
 	 * Launch the application.
@@ -48,13 +52,15 @@ public class TestWindow {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.rectEditor = new RectangleEditor();
+		ViewAnnotationLink link = new ViewAnnotationLink (this.rectEditor);
 		
 		try {
 			
 			BufferedImage image = ImageIO.read(new File("G:\\Eclipse-Projekte\\GTA_Casino\\Screencaps\\2021-06-17---14-30-10-367495\\2021-06-17---14-30-13-477013.png"));
 			
-			ImageViewer imagePanel = new ImageViewer();
-			
+			ImageViewer imagePanel = new ImageViewer(link);
+			link.setImageViewer(imagePanel);
 			frame.getContentPane().add(imagePanel, BorderLayout.CENTER);
 			imagePanel.setImage(image);
 			
@@ -62,11 +68,12 @@ public class TestWindow {
 			
 		}
 		panel = new MapClassAnnotationPanel(new ChangeEmitter() {
-
 			@Override
 			public void updateOnForwardedChange() {
-				Jsonable jsonable = panel.getAnnotation().getJsonable();
-				System.out.println(jsonable.toJson());
+				Annotation anno = panel.getAnnotation();
+				link.updateViewedAnnotations(anno);
+				
+				// System.out.println(jsonable.toJson());
 			}
 
 			@Override
@@ -81,8 +88,14 @@ public class TestWindow {
 				
 			}
 			
-		}, MappableAnnotationPanel.TYPE_ALL);
+		}, link, MappableAnnotationPanel.TYPE_ALL);
+		link.setRootAnnotationPanel(this.panel);
+		
+		
 		frame.getContentPane().add(panel, BorderLayout.EAST);
+		
+		
+		
 	}
 
 }

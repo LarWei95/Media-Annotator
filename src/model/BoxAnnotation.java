@@ -12,9 +12,9 @@ public class BoxAnnotation extends Annotation {
 	private int endX;
 	private int endY;
 	
-	private BaseClassAnnotation annotation;
+	private MapClassAnnotation annotation;
 	
-	public BoxAnnotation (int startX, int startY, int endX, int endY, BaseClassAnnotation annotation) {
+	public BoxAnnotation (int startX, int startY, int endX, int endY, MapClassAnnotation annotation) {
 		this.startX = startX;
 		this.startY = startY;
 		
@@ -24,9 +24,29 @@ public class BoxAnnotation extends Annotation {
 		this.annotation = annotation;
 	}
 	
+	public MapClassAnnotation getMapClassAnnotation () {
+		return this.annotation;
+	}
+	
 	@Override
 	public String getKeyString() {
 		return "box";
+	}
+	
+	public int getStartX () {
+		return this.startX;
+	}
+	
+	public int getStartY () {
+		return this.startY;
+	}
+	
+	public int getEndX () {
+		return this.endX;
+	}
+	
+	public int getEndY () {
+		return this.endY;
 	}
 
 	@Override

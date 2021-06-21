@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import javax.swing.JPanel;
 
+import control.ViewAnnotationLink;
 import model.Annotation;
 import model.MapClassAnnotation;
 import view.elements.ChangeEmitter;
@@ -14,8 +15,8 @@ public class MapClassAnnotationPanel extends MappableAnnotationPanel {
 	/**
 	 * Create the panel.
 	 */
-	public MapClassAnnotationPanel(ChangeEmitter emitter, String[] options) {
-		super(emitter, options);
+	public MapClassAnnotationPanel(ChangeEmitter emitter, ViewAnnotationLink viewAnnotationLink, String[] options) {
+		super(emitter, viewAnnotationLink, options);
 	}
 
 	@Override

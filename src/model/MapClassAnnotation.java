@@ -21,6 +21,10 @@ public class MapClassAnnotation extends BaseClassAnnotation {
 		return "mapclass";
 	}
 
+	public HashMap<String, Annotation> getClasses () {
+		return this.classes;
+	}
+	
 	@Override
 	public String getValueString() {
 		StringBuilder builder = new StringBuilder("{");

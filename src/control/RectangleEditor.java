@@ -15,6 +15,34 @@ public class RectangleEditor {
 		this.rectangle = null;
 	}
 	
+	public void clearStoredRectangles () {
+		this.rectangles.clear();
+	}
+	
+	public void addRectangle (int xmin, int ymin, int xmax, int ymax) {
+		int temp;
+		
+		if (xmin > xmax) {
+			temp = xmin;
+			xmin = xmax;
+			
+			xmax = temp;
+		}
+		
+		if (ymin > ymax) {
+			temp = ymin;
+			ymin = ymax;
+			
+			ymax = temp;
+		}
+		
+		xmax = xmax - xmin;
+		ymax = ymax - ymin;
+		
+		Rectangle rectangle = new Rectangle(xmin, ymin, xmax, ymax);
+		this.rectangles.add(rectangle);
+	}
+	
 	public void updateStart (int x, int y, double scale) {
 		x = (int) Math.round(x / scale);
 		y = (int) Math.round(y / scale);
