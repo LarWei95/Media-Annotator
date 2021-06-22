@@ -1,4 +1,4 @@
-package view.annotation;
+package view.annotation.types;
 
 import javax.swing.JPanel;
 
@@ -39,15 +39,19 @@ class AnnotationAddAction implements ActionListener {
 class TabSelectListener implements ChangeListener {
 	private MappableAnnotationPanel annotationPanel;
 	private JTabbedPane tabs;
+	protected boolean active;
 	
 	public TabSelectListener (MappableAnnotationPanel annotationPanel, JTabbedPane tabs) {
 		this.annotationPanel = annotationPanel;
 		this.tabs = tabs;
+		this.active = true;
 	}
 	
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		this.annotationPanel.startActivePanelContainerFill();
+		if (this.active) {
+			this.annotationPanel.startActivePanelContainerFill();
+		}
 	}
 	
 }
@@ -79,6 +83,7 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 	protected ArrayList<MappablePanel> mappablePanels;
 	protected ArrayList<AnnotationPanel> annotationPanels;
 	protected JTabbedPane annotationTabs;
+	private TabSelectListener tabSelectListener;
 	protected String[] options;
 	/**
 	 * Create the panel.
@@ -115,7 +120,8 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 		add(addAnnotationButton, gbc_addAnnotationButton);
 		
 		annotationTabs = new JTabbedPane(JTabbedPane.RIGHT);
-		annotationTabs.addChangeListener(new TabSelectListener(this, this.annotationTabs));
+		this.tabSelectListener = new TabSelectListener(this, this.annotationTabs);
+		annotationTabs.addChangeListener(this.tabSelectListener);
 		GridBagConstraints gbc_annotationTabs = new GridBagConstraints();
 		gbc_annotationTabs.fill = GridBagConstraints.BOTH;
 		gbc_annotationTabs.gridx = 0;

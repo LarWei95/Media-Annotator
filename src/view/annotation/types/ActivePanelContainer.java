@@ -1,4 +1,4 @@
-package view.annotation;
+package view.annotation.types;
 
 public class ActivePanelContainer {
 	private BoxAnnotationPanel boxAnnotationPanel;

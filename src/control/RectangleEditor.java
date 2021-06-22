@@ -19,6 +19,10 @@ public class RectangleEditor {
 		this.rectangles.clear();
 	}
 	
+	public void clearCurrentRectangle () {
+		this.rectangle = null;
+	}
+	
 	public void addRectangle (int xmin, int ymin, int xmax, int ymax) {
 		int temp;
 		

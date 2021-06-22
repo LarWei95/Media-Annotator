@@ -1,15 +1,16 @@
 package control;
 
+import java.awt.Rectangle;
 import java.util.HashMap;
 
 import model.Annotation;
 import model.BoxAnnotation;
 import model.MapClassAnnotation;
 import view.ImageViewer;
-import view.annotation.ActivePanelContainer;
-import view.annotation.AnnotationPanel;
-import view.annotation.BoxAnnotationPanel;
-import view.annotation.ClassAnnotationPanel;
+import view.annotation.types.ActivePanelContainer;
+import view.annotation.types.AnnotationPanel;
+import view.annotation.types.BoxAnnotationPanel;
+import view.annotation.types.ClassAnnotationPanel;
 
 public class ViewAnnotationLink {
 	private ActivePanelContainer activePanelContainer;
@@ -68,5 +69,20 @@ public class ViewAnnotationLink {
 		this.imageViewer.repaint();
 	}
 	
-	
+	public void setCurrentBox () {
+		BoxAnnotationPanel boxPanel= this.activePanelContainer.getBoxAnnotationPanel();
+		
+		if (boxPanel != null) {
+			Rectangle rect = this.rectEditor.getRectangle();
+			
+			int xmin = rect.x;
+			int ymin = rect.y;
+			int xmax = xmin + rect.width;
+			int ymax = ymin + rect.height;
+			
+			boxPanel.setCoordinates(xmin, ymin, xmax, ymax);
+		}
+		
+		this.rectEditor.clearCurrentRectangle();
+	}
 }

@@ -1,4 +1,4 @@
-package view.annotation;
+package view.annotation.types;
 import model.Annotation;
 import model.ClassAnnotation;
 import view.elements.ChangeEmitter;

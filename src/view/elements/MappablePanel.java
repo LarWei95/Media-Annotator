@@ -8,8 +8,9 @@ import java.awt.Insets;
 import javax.swing.JSeparator;
 
 import model.Annotation;
-import view.annotation.AnnotationPanel;
-import view.annotation.MappableAnnotationPanel;
+import view.annotation.types.AnnotationPanel;
+import view.annotation.types.MappableAnnotationPanel;
+
 import java.awt.BorderLayout;
 
 public class MappablePanel extends ChangeEmitterPanel {

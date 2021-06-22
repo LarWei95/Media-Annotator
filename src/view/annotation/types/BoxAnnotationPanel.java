@@ -1,4 +1,4 @@
-package view.annotation;
+package view.annotation.types;
 
 import javax.swing.JPanel;
 
@@ -33,7 +33,9 @@ class CoordinateChangeListener implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		this.panel.forwardChange();
+		if (this.active) {
+			this.panel.forwardChange();
+		}
 	}
 	
 }
@@ -203,28 +205,28 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 			boolean ymaxOk = false;
 			
 			try {
-				xmin = Integer.valueOf(xminField.getText());
+				xmin = Integer.valueOf(xminField.getText().replace(".", ""));
 				xminOk = true;
 			} catch (NumberFormatException e) {
 				
 			}
 			
 			try {
-				ymin = Integer.valueOf(yminField.getText());
+				ymin = Integer.valueOf(yminField.getText().replace(".", ""));
 				yminOk = true;
 			} catch (NumberFormatException e) {
 				
 			}
 			
 			try {
-				xmax = Integer.valueOf(xmaxField.getText());
+				xmax = Integer.valueOf(xmaxField.getText().replace(".", ""));
 				xmaxOk = true;
 			} catch (NumberFormatException e) {
 				
 			}
 			
 			try {
-				ymax = Integer.valueOf(ymaxField.getText());
+				ymax = Integer.valueOf(ymaxField.getText().replace(".", ""));
 				ymaxOk = true;
 			} catch (NumberFormatException e) {
 				
