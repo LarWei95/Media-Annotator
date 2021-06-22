@@ -3,6 +3,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import control.RectangleEditor;
+import control.ViewAnnotationLink;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -19,7 +21,7 @@ class ImageViewerMouseMotion extends MouseMotionAdapter {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// Update bei jeder gedrueckten Bewegung
-		this.imageViewer.rectangleEditor.updateEnd(e.getX(), e.getY(), this.imageViewer.getScale());
+		this.imageViewer.link.rectEditor.updateEnd(e.getX(), e.getY(), this.imageViewer.getScale());
 		this.imageViewer.repaint();
 	}
 }
@@ -33,12 +35,13 @@ class ImageViewerMouse extends MouseAdapter {
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
-		this.imageViewer.rectangleEditor.updateStart(e.getX(), e.getY(), this.imageViewer.getScale());
+		this.imageViewer.link.rectEditor.updateStart(e.getX(), e.getY(), this.imageViewer.getScale());
 		this.imageViewer.repaint();
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		this.imageViewer.rectangleEditor.updateEnd(e.getX(), e.getY(), this.imageViewer.getScale());
+		this.imageViewer.link.rectEditor.updateEnd(e.getX(), e.getY(), this.imageViewer.getScale());
+		this.imageViewer.setCurrentRectangleToPanel();
 		this.imageViewer.repaint();
 	}
 }
@@ -62,7 +65,7 @@ public class ImageViewer extends BasicImageViewer {
 	 */
 	private static final long serialVersionUID = -4255320709032356584L;
 
-	protected RectangleEditor rectangleEditor;
+	protected ViewAnnotationLink link;
 	
 	private ImageViewerMouseMotion mouseMotion;
 	private ImageViewerMouse mouse;
@@ -70,9 +73,9 @@ public class ImageViewer extends BasicImageViewer {
 	/**
 	 * Create the panel.
 	 */
-	public ImageViewer() {
+	public ImageViewer(ViewAnnotationLink link) {
 		super();
-		this.rectangleEditor = new RectangleEditor();
+		this.link = link;
 		this.mouseMotion = new ImageViewerMouseMotion(this);
 		this.mouse = new ImageViewerMouse(this);
 		this.addMouseMotionListener(this.mouseMotion);
@@ -83,19 +86,22 @@ public class ImageViewer extends BasicImageViewer {
 	protected void paintComponent (Graphics g) {
 		super.paintComponent(g);
 		
-		Rectangle currentRect = this.rectangleEditor.getRectangle();
+		Rectangle currentRect = this.link.rectEditor.getRectangle();
 		
-		if (currentRect != null) {
-			this.drawRectangle(g, currentRect);
+		Color existing = new Color(255, 255, 0);
+		Color newColor = new Color(255, 0, 0);
+		
+		for (Rectangle rect: this.link.rectEditor.getRectangles()) {
+			this.drawRectangle(g, rect, existing);
 		}
 		
-		for (Rectangle rect: this.rectangleEditor.getRectangles()) {
-			this.drawRectangle(g, rect);
+		if (currentRect != null) {
+			this.drawRectangle(g, currentRect, newColor);
 		}
 	}
 	
-	private void drawRectangle (Graphics g, Rectangle rect) {
-		g.setColor(new Color(255, 255, 0));
+	private void drawRectangle (Graphics g, Rectangle rect, Color color) {
+		g.setColor(color);
 		
 		double scale = this.getScale();
 		
@@ -116,6 +122,10 @@ public class ImageViewer extends BasicImageViewer {
 		y = y + 2;
 		
 		g.drawRect(x, y, width, height);		
+	}
+	
+	protected void setCurrentRectangleToPanel () {
+		this.link.setCurrentBox();
 	}
 	
 }

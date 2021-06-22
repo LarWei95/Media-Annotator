@@ -21,6 +21,10 @@ public class ArrayClassAnnotation extends BaseClassAnnotation {
 		return "arrayclass";
 	}
 
+	public ArrayList<Annotation> getClasses () {
+		return this.classes;
+	}
+	
 	@Override
 	public String getValueString() {
 		StringBuilder builder = new StringBuilder("[");

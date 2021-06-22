@@ -8,7 +8,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import view.annotation.MappableAnnotationPanel;
+import view.annotation.types.MappableAnnotationPanel;
 
 import java.awt.Insets;
 import java.awt.FlowLayout;

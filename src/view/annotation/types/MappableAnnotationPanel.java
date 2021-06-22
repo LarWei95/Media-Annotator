@@ -1,4 +1,4 @@
-package view.annotation;
+package view.annotation.types;
 
 import javax.swing.JPanel;
 
@@ -10,12 +10,17 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.swing.JTabbedPane;
+
+import control.ViewAnnotationLink;
+
 import java.awt.Insets;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 class AnnotationAddAction implements ActionListener {
 	private MappableAnnotationPanel annotationPanel;
@@ -27,7 +32,28 @@ class AnnotationAddAction implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		this.annotationPanel.addNewAnnotation();
+		this.annotationPanel.startActivePanelContainerFill();
 	}
+}
+
+class TabSelectListener implements ChangeListener {
+	private MappableAnnotationPanel annotationPanel;
+	private JTabbedPane tabs;
+	protected boolean active;
+	
+	public TabSelectListener (MappableAnnotationPanel annotationPanel, JTabbedPane tabs) {
+		this.annotationPanel = annotationPanel;
+		this.tabs = tabs;
+		this.active = true;
+	}
+	
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if (this.active) {
+			this.annotationPanel.startActivePanelContainerFill();
+		}
+	}
+	
 }
 
 public abstract class MappableAnnotationPanel extends AnnotationPanel {
@@ -49,8 +75,7 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 		TYPE_BOX_ANNO
 	};
 	public static final String[] TYPE_BASECLASS = new String[] {
-			TYPE_CLASS_ANNO,
-			TYPE_BOX_ANNO
+			TYPE_CLASS_ANNO
 		};
 	
 	private JComboBox<String> annotationTypeBox;
@@ -58,12 +83,13 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 	protected ArrayList<MappablePanel> mappablePanels;
 	protected ArrayList<AnnotationPanel> annotationPanels;
 	protected JTabbedPane annotationTabs;
+	private TabSelectListener tabSelectListener;
 	protected String[] options;
 	/**
 	 * Create the panel.
 	 */
-	protected MappableAnnotationPanel(ChangeEmitter emitter, String[] options) {
-		super(emitter);
+	protected MappableAnnotationPanel(ChangeEmitter emitter, ViewAnnotationLink viewAnnotationLink, String[] options) {
+		super(emitter, viewAnnotationLink);
 		this.options = options;
 		this.mappablePanels = new ArrayList<MappablePanel>();
 		this.annotationPanels = new ArrayList<AnnotationPanel>();
@@ -94,6 +120,8 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 		add(addAnnotationButton, gbc_addAnnotationButton);
 		
 		annotationTabs = new JTabbedPane(JTabbedPane.RIGHT);
+		this.tabSelectListener = new TabSelectListener(this, this.annotationTabs);
+		annotationTabs.addChangeListener(this.tabSelectListener);
 		GridBagConstraints gbc_annotationTabs = new GridBagConstraints();
 		gbc_annotationTabs.fill = GridBagConstraints.BOTH;
 		gbc_annotationTabs.gridx = 0;
@@ -111,16 +139,16 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 		
 		switch (selected) {
 		case MappableAnnotationPanel.TYPE_CLASS_ANNO:
-			newPanel = new ClassAnnotationPanel(null);
+			newPanel = new ClassAnnotationPanel(null, this.viewAnnotationLink);
 			break;
 		case MappableAnnotationPanel.TYPE_MAP_ANNO:
-			newPanel = new MapClassAnnotationPanel(null, this.options);
+			newPanel = new MapClassAnnotationPanel(null, this.viewAnnotationLink, options);
 			break;
 		case MappableAnnotationPanel.TYPE_ARRAY_ANNO:
-			newPanel = new ArrayClassAnnotationPanel(null, this.options);
+			newPanel = new ArrayClassAnnotationPanel(null, this.viewAnnotationLink, options);
 			break;
 		case MappableAnnotationPanel.TYPE_BOX_ANNO:
-			newPanel = new BoxAnnotationPanel(null);
+			newPanel = new BoxAnnotationPanel(null, this.viewAnnotationLink);
 			break;
 		default:
 			newPanel = null;
@@ -147,9 +175,9 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 	
 	public final void deleteCurrentTab () {
 		int selected = this.annotationTabs.getSelectedIndex();
-		this.annotationTabs.remove(selected);
 		this.mappablePanels.remove(selected);
 		this.annotationPanels.remove(selected);
+		this.annotationTabs.remove(selected);
 		this.updateTabNames();
 		this.forwardChange();
 	}
@@ -221,6 +249,18 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 	
 	@Override
 	public void updateOnForwardedChange() {
-		this.updateTabNames();		
+		this.updateTabNames();
+	}
+	
+	public void fillActivePanelContainer (ActivePanelContainer activePanelContainer) {
+		int selected = this.annotationTabs.getSelectedIndex();
+		
+		if (selected != -1) {
+			this.annotationPanels.get(selected).fillActivePanelContainer(activePanelContainer);
+		}		
+	}
+	
+	protected void startActivePanelContainerFill () {
+		this.viewAnnotationLink.updateActivePanelContainer();
 	}
 }

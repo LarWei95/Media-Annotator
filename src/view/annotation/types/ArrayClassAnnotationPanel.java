@@ -1,9 +1,10 @@
-package view.annotation;
+package view.annotation.types;
 
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import control.ViewAnnotationLink;
 import model.Annotation;
 import model.ArrayClassAnnotation;
 import view.elements.ChangeEmitter;
@@ -11,8 +12,8 @@ import view.elements.MappablePanel;
 
 public class ArrayClassAnnotationPanel extends MappableAnnotationPanel {
 
-	public ArrayClassAnnotationPanel(ChangeEmitter emitter, String[] options) {
-		super(emitter, options);
+	public ArrayClassAnnotationPanel(ChangeEmitter emitter, ViewAnnotationLink viewAnnotationLink, String[] options) {
+		super(emitter, viewAnnotationLink, options);
 	}
 
 	@Override

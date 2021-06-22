@@ -1,4 +1,4 @@
-package view.annotation;
+package view.annotation.types;
 import model.Annotation;
 import model.ClassAnnotation;
 import view.elements.ChangeEmitter;
@@ -8,6 +8,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JCheckBox;
+
+import control.ViewAnnotationLink;
+
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 
@@ -21,8 +24,8 @@ public class ClassAnnotationPanel extends AnnotationPanel {
 	/**
 	 * Create the panel.
 	 */
-	public ClassAnnotationPanel(ChangeEmitter changeEmitter) {
-		super(changeEmitter);
+	public ClassAnnotationPanel(ChangeEmitter changeEmitter, ViewAnnotationLink viewAnnotationLink) {
+		super(changeEmitter, viewAnnotationLink);
 		this.variableInput = new VariableInput("Class name:", this);
 		this.classAnnotation = new ClassAnnotation("", false);
 		
@@ -61,6 +64,11 @@ public class ClassAnnotationPanel extends AnnotationPanel {
 	@Override
 	public Annotation getAnnotation() {
 		return this.classAnnotation;
+	}
+
+	@Override
+	public void fillActivePanelContainer(ActivePanelContainer activePanelContainer) {
+		activePanelContainer.setClassAnnotationPanel(this);
 	}
 
 }
