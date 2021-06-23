@@ -12,7 +12,7 @@ import view.annotation.types.MappableAnnotationPanel;
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 
-public class ImageAnnotationPanel extends JPanel {
+public class ImageAnnotationPanel extends JPanel implements IMediaAnnotator<BufferedImage>{
 
 	private MapClassAnnotationPanel panel;
 	private RectangleEditor rectEditor;
@@ -34,10 +34,7 @@ public class ImageAnnotationPanel extends JPanel {
 		this.panel = new MapClassAnnotationPanel(new ChangeEmitter() {
 			@Override
 			public void updateOnForwardedChange() {
-				Annotation anno = panel.getAnnotation();
-				link.updateViewedAnnotations(anno);
 				
-				System.out.println(anno.getJsonable().toJson());
 			}
 
 			@Override
@@ -57,7 +54,23 @@ public class ImageAnnotationPanel extends JPanel {
 		this.add(this.panel, BorderLayout.EAST);
 	}
 
-	public void setImage (BufferedImage image) {
-		this.imagePanel.setImage(image);
+	@Override
+	public Annotation getAnnotation() {
+		return this.panel.getAnnotation();
+	}
+
+	@Override
+	public void setAnnotation(Annotation annotation) {
+		this.panel.setAnnotation(annotation);
+	}
+
+	@Override
+	public void setMedia(BufferedImage media) {
+		this.imagePanel.setImage(media);
+	}
+
+	@Override
+	public void clear() {
+		this.panel.clear();
 	}
 }

@@ -64,5 +64,7 @@ public class MediaSelectionPanel<T> extends JPanel {
 	public void updateSelection () {
 		int index = this.mediaList.getSelectedIndex();
 		System.out.println(index);
+		
+		this.mediaContainer.setSelectedMedia(index);
 	}
 }

@@ -63,34 +63,38 @@ public class MapClassAnnotationPanel extends MappableAnnotationPanel {
 	public void setAnnotation(Annotation annotation) {
 		this.clear();
 		
-		MapClassAnnotation anno = (MapClassAnnotation) annotation;
-		HashMap<String, Annotation> subAnnos = anno.getClasses();
-		String selectedType;
-		
-		Annotation subAnno;
-		int lastIndex;
-		
-		for (String  key: subAnnos.keySet()) {
-			subAnno = subAnnos.get(key);
+		if (annotation != null) {
+			MapClassAnnotation anno = (MapClassAnnotation) annotation;
+			HashMap<String, Annotation> subAnnos = anno.getClasses();
+			String selectedType;
 			
-			if (subAnno instanceof ArrayClassAnnotation) {
-				selectedType = MappableAnnotationPanel.TYPE_ARRAY_ANNO;	
-			} else if (subAnno instanceof MapClassAnnotation) {
-				selectedType = MappableAnnotationPanel.TYPE_MAP_ANNO;	
-			} else if (subAnno instanceof ClassAnnotation) {
-				selectedType = MappableAnnotationPanel.TYPE_CLASS_ANNO;	
-			} else if (subAnno instanceof BoxAnnotation) {
-				selectedType = MappableAnnotationPanel.TYPE_BOX_ANNO;	
-			} else {
-				selectedType = null;
+			Annotation subAnno;
+			int lastIndex;
+			
+			for (String  key: subAnnos.keySet()) {
+				subAnno = subAnnos.get(key);
+				
+				if (subAnno instanceof ArrayClassAnnotation) {
+					selectedType = MappableAnnotationPanel.TYPE_ARRAY_ANNO;	
+				} else if (subAnno instanceof MapClassAnnotation) {
+					selectedType = MappableAnnotationPanel.TYPE_MAP_ANNO;	
+				} else if (subAnno instanceof ClassAnnotation) {
+					selectedType = MappableAnnotationPanel.TYPE_CLASS_ANNO;	
+				} else if (subAnno instanceof BoxAnnotation) {
+					selectedType = MappableAnnotationPanel.TYPE_BOX_ANNO;	
+				} else {
+					selectedType = null;
+				}
+				
+				this.addNewAnnotation(selectedType, false);
+				lastIndex = this.mappablePanels.size() - 1;
+				
+				this.mappablePanels.get(lastIndex).setAnnotationIdentifier(key);
+				this.annotationPanels.get(lastIndex).setAnnotation(subAnno);
 			}
-			
-			this.addNewAnnotation(selectedType, false);
-			lastIndex = this.mappablePanels.size() - 1;
-			
-			this.mappablePanels.get(lastIndex).setAnnotationIdentifier(key);
-			this.annotationPanels.get(lastIndex).setAnnotation(subAnno);
 		}
+		
+		this.forwardChange();
 	}
 
 }
