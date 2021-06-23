@@ -76,6 +76,12 @@ public class ClassAnnotationPanel extends AnnotationPanel {
 		ClassAnnotation anno = (ClassAnnotation) annotation;
 		this.classAnnotation = anno;
 		this.variableInput.setInputString(anno.getClassAnnotation());
+		this.forwardChange();
+	}
+
+	@Override
+	public void clear() {
+		this.classAnnotation = new ClassAnnotation("", false);
 	}
 
 }

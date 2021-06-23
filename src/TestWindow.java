@@ -18,6 +18,7 @@ import java.awt.BorderLayout;
 public class TestWindow {
 
 	private JFrame frame;
+	private ImageAnnotationPanel imageAnnotationPanel;
 	private MediaContainer<BufferedImage> imageContainer;
 	private MediaSelectionPanel<BufferedImage> mediaSelectionPanel;
 
@@ -54,17 +55,11 @@ public class TestWindow {
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		
-		ImageAnnotationPanel panel = new ImageAnnotationPanel();
+		this.imageAnnotationPanel = new ImageAnnotationPanel();
 		
-		frame.getContentPane().add(panel,BorderLayout.CENTER);
-		try {
-			
-			BufferedImage image = ImageIO.read(new File("G:\\Eclipse-Projekte\\GTA_Casino\\Screencaps\\2021-06-17---14-30-10-367495\\2021-06-17---14-30-13-477013.png"));
-			panel.setImage(image);
-		} catch (Exception e) {
-		}
+		frame.getContentPane().add(this.imageAnnotationPanel,BorderLayout.CENTER);
 		
-		this.imageContainer = new MediaContainer<BufferedImage>();
+		this.imageContainer = new MediaContainer<BufferedImage>(this.imageAnnotationPanel);
 		
 		Path[] paths = new Path[] {
 				Path.of("G:\\Eclipse-Projekte\\GTA_Casino\\Screencaps\\2021-06-17---14-30-10-367495\\2021-06-17---14-30-13-477013.png"),

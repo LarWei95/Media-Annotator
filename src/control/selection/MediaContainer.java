@@ -5,14 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Annotation;
+import view.annotation.media.IMediaAnnotator;
 
 public class MediaContainer<T> {
 	private ArrayList<MediaReference<T>> medias;
 	private ArrayList<Annotation> annotations;
+	
+	private final IMediaAnnotator<T> annotator;
+	private int mediaIndex;
 
-	public MediaContainer () {
+	public MediaContainer (IMediaAnnotator<T> annotator) {
 		this.medias = new ArrayList<MediaReference<T>> ();
 		this.annotations = new ArrayList<Annotation>();
+		
+		this.annotator = annotator;
+		this.mediaIndex = -1;
 	}
 	
 	public final void loadAll () throws IOException{
@@ -54,5 +61,20 @@ public class MediaContainer<T> {
 		for (MediaReference<T> ref: medias) {
 			this.addBlankMedia(ref);
 		}
+	}
+	
+	public void setSelectedMedia (int index) {
+		if (this.mediaIndex != -1) {
+			this.annotations.set(this.mediaIndex, this.annotator.getAnnotation());
+		}
+		
+		this.annotator.clear();
+		
+		if (this.mediaIndex != -1) {
+			this.annotator.setAnnotation(this.annotations.get(index));
+		}
+		
+		this.annotator.setMedia(this.medias.get(index).getMedia());
+		this.mediaIndex = index;
 	}
 }

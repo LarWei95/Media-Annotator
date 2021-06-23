@@ -262,5 +262,12 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		this.setFieldListenersActive(true);
 		
 		this.annotationPanel.setAnnotation(anno.getMapClassAnnotation());
+		
+		this.forwardChange();
+	}
+
+	@Override
+	public void clear() {
+		this.annotationPanel.clear();
 	}
 }

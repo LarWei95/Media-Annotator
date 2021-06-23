@@ -27,4 +27,6 @@ public abstract class AnnotationPanel extends ChangeEmitterPanel implements IAnn
 	public abstract void fillActivePanelContainer (ActivePanelContainer activePanelContainer);
 	
 	public abstract void setAnnotation (Annotation annotation);
+	
+	public abstract void clear();
 }
