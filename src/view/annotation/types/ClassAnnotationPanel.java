@@ -1,7 +1,7 @@
 package view.annotation.types;
 import model.Annotation;
 import model.ClassAnnotation;
-import view.elements.ChangeEmitter;
+import view.ChangeEmitter;
 import view.elements.VariableInput;
 
 import java.awt.GridBagLayout;
@@ -69,6 +69,13 @@ public class ClassAnnotationPanel extends AnnotationPanel {
 	@Override
 	public void fillActivePanelContainer(ActivePanelContainer activePanelContainer) {
 		activePanelContainer.setClassAnnotationPanel(this);
+	}
+
+	@Override
+	public void setAnnotation(Annotation annotation) {
+		ClassAnnotation anno = (ClassAnnotation) annotation;
+		this.classAnnotation = anno;
+		this.variableInput.setInputString(anno.getClassAnnotation());
 	}
 
 }

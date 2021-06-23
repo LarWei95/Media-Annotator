@@ -2,8 +2,8 @@ package view.annotation.types;
 
 import javax.swing.JPanel;
 
-import view.elements.ChangeEmitter;
-import view.elements.ChangeEmitterPanel;
+import view.ChangeEmitter;
+import view.ChangeEmitterPanel;
 import view.elements.MappablePanel;
 
 import java.awt.GridBagLayout;
@@ -83,7 +83,7 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 	protected ArrayList<MappablePanel> mappablePanels;
 	protected ArrayList<AnnotationPanel> annotationPanels;
 	protected JTabbedPane annotationTabs;
-	private TabSelectListener tabSelectListener;
+	protected TabSelectListener tabSelectListener;
 	protected String[] options;
 	/**
 	 * Create the panel.
@@ -135,8 +135,12 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 	protected void addNewAnnotation () {
 		String selected = (String) this.annotationTypeBox.getSelectedItem();
 		
+		this.addNewAnnotation(selected, true);
+	}
+	
+	protected void addNewAnnotation (String selected, boolean forwardChange) {
 		AnnotationPanel newPanel;
-		
+
 		switch (selected) {
 		case MappableAnnotationPanel.TYPE_CLASS_ANNO:
 			newPanel = new ClassAnnotationPanel(null, this.viewAnnotationLink);
@@ -151,20 +155,21 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 			newPanel = new BoxAnnotationPanel(null, this.viewAnnotationLink);
 			break;
 		default:
-			newPanel = null;
+			throw new IllegalArgumentException("Unrecognized class: "+String.valueOf(selected));
 		}
 		
-		if (newPanel != null) {
-			MappablePanel superPanel = new MappablePanel(selected, this, newPanel);
-			this.mappablePanels.add(superPanel);
-			this.annotationPanels.add(newPanel);
-			
-			String tabName = this.getDefaultTabName();
-			boolean changeable = this.isIdentifierChangeable();
-			
-			this.annotationTabs.addTab(tabName, null, superPanel, null);
-			superPanel.setIdentifierEnabled(changeable);
-			superPanel.setAnnotationIdentifier(tabName);
+		MappablePanel superPanel = new MappablePanel(selected, this, newPanel);
+		this.mappablePanels.add(superPanel);
+		this.annotationPanels.add(newPanel);
+		
+		String tabName = this.getDefaultTabName();
+		boolean changeable = this.isIdentifierChangeable();
+		
+		this.annotationTabs.addTab(tabName, null, superPanel, null);
+		superPanel.setIdentifierEnabled(changeable);
+		superPanel.setAnnotationIdentifier(tabName);
+		
+		if (forwardChange) {
 			this.forwardChange();
 		}
 	}
@@ -262,5 +267,11 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 	
 	protected void startActivePanelContainerFill () {
 		this.viewAnnotationLink.updateActivePanelContainer();
+	}
+	
+	public void clear () {
+		this.mappablePanels.clear();
+		this.annotationPanels.clear();
+		this.annotationTabs.removeAll();
 	}
 }

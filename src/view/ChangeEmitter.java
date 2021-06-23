@@ -1,4 +1,4 @@
-package view.elements;
+package view;
 
 public interface ChangeEmitter {
 	public void updateOnForwardedChange ();

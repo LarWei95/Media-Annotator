@@ -8,7 +8,42 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import view.ChangeEmitter;
+import view.ChangeEmitterPanel;
+
 import java.awt.Insets;
+
+class InputListener implements DocumentListener {
+	private VariableInput variableInput;
+	public boolean active;
+	
+	public InputListener (VariableInput input) {
+		this.variableInput = input;
+		this.active = true;
+	}
+	
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		if (this.active) {
+			this.variableInput.forwardChange();
+		}
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		if (this.active) {
+			this.variableInput.forwardChange();
+		}
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		if (this.active) {
+			this.variableInput.forwardChange();
+		}
+	}
+	
+}
 
 public class VariableInput extends ChangeEmitterPanel {
 	/**
@@ -16,6 +51,7 @@ public class VariableInput extends ChangeEmitterPanel {
 	 */
 	private static final long serialVersionUID = 8056671622428951949L;
 	private JLabel inputLabel;
+	private InputListener listener;
 	private JTextField textInputField;
 	
 	private ValueType valueType;
@@ -42,24 +78,8 @@ public class VariableInput extends ChangeEmitterPanel {
 		add(inputLabel, gbc_inputLabel);
 		
 		textInputField = new JTextField();
-		textInputField.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				forwardChange();
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				forwardChange();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				forwardChange();
-			}
-			
-		});
+		this.listener = new InputListener (this);
+		textInputField.getDocument().addDocumentListener(this.listener);
 		
 		GridBagConstraints gbc_textInputField = new GridBagConstraints();
 		gbc_textInputField.fill = GridBagConstraints.HORIZONTAL;
@@ -73,6 +93,12 @@ public class VariableInput extends ChangeEmitterPanel {
 		return this.textInputField.getText();
 	}
 
+	public final void setInputString (Object object) {
+		this.listener.active = false;
+		this.textInputField.setText(String.valueOf(object));
+		this.listener.active = true;
+	}
+	
 	@Override
 	public void updateOnForwardedChange() {
 		// Nichts

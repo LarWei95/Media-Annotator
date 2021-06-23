@@ -7,7 +7,10 @@ import javax.swing.JPanel;
 import control.ViewAnnotationLink;
 import model.Annotation;
 import model.ArrayClassAnnotation;
-import view.elements.ChangeEmitter;
+import model.BoxAnnotation;
+import model.ClassAnnotation;
+import model.MapClassAnnotation;
+import view.ChangeEmitter;
 import view.elements.MappablePanel;
 
 public class ArrayClassAnnotationPanel extends MappableAnnotationPanel {
@@ -68,6 +71,40 @@ public class ArrayClassAnnotationPanel extends MappableAnnotationPanel {
 			panel.setAnnotationIdentifier(identifier);
 			this.annotationTabs.setTitleAt(i, identifier);
 			
+		}
+	}
+
+	@Override
+	public void setAnnotation(Annotation annotation) {
+		this.clear();
+		
+		ArrayClassAnnotation anno = (ArrayClassAnnotation) annotation;
+		ArrayList<Annotation> subAnnos = anno.getClasses();
+		String selectedType;
+		
+		int i = 1;
+		int lastIndex;
+		
+		for (Annotation subAnno: subAnnos) {
+			if (subAnno instanceof ArrayClassAnnotation) {
+				selectedType = MappableAnnotationPanel.TYPE_ARRAY_ANNO;	
+			} else if (subAnno instanceof MapClassAnnotation) {
+				selectedType = MappableAnnotationPanel.TYPE_MAP_ANNO;	
+			} else if (subAnno instanceof ClassAnnotation) {
+				selectedType = MappableAnnotationPanel.TYPE_CLASS_ANNO;	
+			} else if (subAnno instanceof BoxAnnotation) {
+				selectedType = MappableAnnotationPanel.TYPE_BOX_ANNO;	
+			} else {
+				selectedType = null;
+			}
+			
+			this.addNewAnnotation(selectedType, false);
+			lastIndex = this.mappablePanels.size() - 1;
+			
+			this.mappablePanels.get(lastIndex).setAnnotationIdentifier(String.valueOf(i));
+			this.annotationPanels.get(lastIndex).setAnnotation(subAnno);
+			
+			i++;
 		}
 	}
 }

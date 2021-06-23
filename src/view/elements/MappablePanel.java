@@ -8,6 +8,7 @@ import java.awt.Insets;
 import javax.swing.JSeparator;
 
 import model.Annotation;
+import view.ChangeEmitterPanel;
 import view.annotation.types.AnnotationPanel;
 import view.annotation.types.MappableAnnotationPanel;
 

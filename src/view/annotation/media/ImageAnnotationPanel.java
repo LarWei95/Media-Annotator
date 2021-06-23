@@ -4,10 +4,11 @@ import javax.swing.JPanel;
 import control.RectangleEditor;
 import control.ViewAnnotationLink;
 import model.Annotation;
+import view.ChangeEmitter;
 import view.ImageViewer;
 import view.annotation.types.MapClassAnnotationPanel;
 import view.annotation.types.MappableAnnotationPanel;
-import view.elements.ChangeEmitter;
+
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 

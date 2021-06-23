@@ -5,8 +5,8 @@ import javax.swing.JPanel;
 import control.IAnnotationSource;
 import control.ViewAnnotationLink;
 import model.Annotation;
-import view.elements.ChangeEmitter;
-import view.elements.ChangeEmitterPanel;
+import view.ChangeEmitter;
+import view.ChangeEmitterPanel;
 
 public abstract class AnnotationPanel extends ChangeEmitterPanel implements IAnnotationSource{
 	protected final ViewAnnotationLink viewAnnotationLink;
@@ -25,4 +25,6 @@ public abstract class AnnotationPanel extends ChangeEmitterPanel implements IAnn
 	}
 	
 	public abstract void fillActivePanelContainer (ActivePanelContainer activePanelContainer);
+	
+	public abstract void setAnnotation (Annotation annotation);
 }

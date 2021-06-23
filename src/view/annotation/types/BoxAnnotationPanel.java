@@ -6,7 +6,8 @@ import model.Annotation;
 import model.BaseClassAnnotation;
 import model.BoxAnnotation;
 import model.MapClassAnnotation;
-import view.elements.ChangeEmitter;
+import view.ChangeEmitter;
+
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
@@ -247,5 +248,19 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 	public void fillActivePanelContainer(ActivePanelContainer activePanelContainer) {
 		activePanelContainer.setBoxAnnotationPanel(this);
 		this.annotationPanel.fillActivePanelContainer(activePanelContainer);
+	}
+
+	@Override
+	public void setAnnotation(Annotation annotation) {
+		BoxAnnotation anno = (BoxAnnotation) annotation;
+		
+		this.setFieldListenersActive(false);
+		this.xminField.setValue(anno.getStartX());
+		this.yminField.setValue(anno.getStartY());
+		this.xmaxField.setValue(anno.getEndX());
+		this.ymaxField.setValue(anno.getEndY());
+		this.setFieldListenersActive(true);
+		
+		this.annotationPanel.setAnnotation(anno.getMapClassAnnotation());
 	}
 }

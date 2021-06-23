@@ -1,4 +1,5 @@
 package view;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -29,6 +30,9 @@ public class BasicImageViewer extends JPanel {
 	private BufferedImage resizedImage;
 	private double scale;
 	
+	private int forceWidth;
+	private int forceHeight;
+	
 	private BasicImageViewerComponent component;
 	
 	/**
@@ -37,6 +41,7 @@ public class BasicImageViewer extends JPanel {
 	public BasicImageViewer() {
 		this.component = new BasicImageViewerComponent(this);
 		this.addComponentListener(this.component);
+		this.resetForcedDimensions();
 	}
 	
 	public double getScale () {
@@ -49,23 +54,39 @@ public class BasicImageViewer extends JPanel {
 		this.repaint();
 	}
 	
+	public final void resetForcedDimensions () {
+		this.forceWidth = -1;
+		this.forceHeight = -1;
+	}
+	
+	public final void setForcedDimensions (int width, int height) {
+		this.forceWidth = width;
+		this.forceHeight = height;
+		this.updateViewScale();
+	}
+	
 	protected void updateViewScale () {
-		double displayWidth = this.getWidth();
-		double displayHeight = this.getHeight();
-		
-		double originalWidth = this.image.getWidth();
-		double originalHeight = this.image.getHeight();
-		
-		double widthScale = displayWidth / originalWidth;
-		double heightScale = displayHeight / originalHeight;
-		
-		this.scale = (widthScale < heightScale) ? widthScale : heightScale;
-		this.updateViewImage();		
+		if (this.image != null) {
+			double displayWidth = (this.forceWidth == -1) ? this.getWidth() : this.forceWidth;
+			double displayHeight = (this.forceHeight == -1) ? this.getHeight() : this.forceWidth;
+			
+			if (displayWidth > 0 && displayHeight > 0) {
+				double originalWidth = this.image.getWidth();
+				double originalHeight = this.image.getHeight();
+				double widthScale = displayWidth / originalWidth;
+				double heightScale = displayHeight / originalHeight;
+				
+				this.scale = (widthScale < heightScale) ? widthScale : heightScale;
+				this.updateViewImage();		
+			}
+		}
 	}
 	
 	private void updateViewImage () {
 		int newWidth = (int) Math.floor(this.image.getWidth() * this.scale);
 		int newHeight = (int) Math.floor(this.image.getHeight() * this.scale);
+		
+		this.setPreferredSize(new Dimension(newWidth, newHeight));
 		
 		Image rescaledImage = this.image.getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT);
 		this.resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
@@ -76,6 +97,9 @@ public class BasicImageViewer extends JPanel {
 	@Override
 	protected void paintComponent (Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(this.resizedImage, 0, 0, this);
+		
+		if (this.resizedImage != null) {
+			g.drawImage(this.resizedImage, 0, 0, this);
+		}
 	}
 }

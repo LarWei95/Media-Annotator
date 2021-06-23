@@ -43,4 +43,8 @@ public class ClassAnnotation extends BaseClassAnnotation {
 		obj.put(this.getKeyString(), Jsoner.escape(this.classAnnotation.toString()));
 		return obj;
 	}
+	
+	public Object getClassAnnotation () {
+		return this.classAnnotation;
+	}
 }
