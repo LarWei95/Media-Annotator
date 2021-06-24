@@ -1,14 +1,11 @@
 package view.annotation.types;
 
-import javax.swing.JPanel;
-
-import control.IAnnotationSource;
 import control.ViewAnnotationLink;
-import model.Annotation;
+import model.annotation.Annotation;
 import view.ChangeEmitter;
 import view.ChangeEmitterPanel;
 
-public abstract class AnnotationPanel extends ChangeEmitterPanel implements IAnnotationSource{
+public abstract class AnnotationPanel extends ChangeEmitterPanel{
 	protected final ViewAnnotationLink viewAnnotationLink;
 		
 	/**
@@ -27,6 +24,8 @@ public abstract class AnnotationPanel extends ChangeEmitterPanel implements IAnn
 	public abstract void fillActivePanelContainer (ActivePanelContainer activePanelContainer);
 	
 	public abstract void setAnnotation (Annotation annotation);
+	
+	public abstract Annotation getAnnotation ();
 	
 	public abstract void clear();
 }

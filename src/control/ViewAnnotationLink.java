@@ -3,14 +3,16 @@ package control;
 import java.awt.Rectangle;
 import java.util.HashMap;
 
-import model.Annotation;
-import model.BoxAnnotation;
-import model.MapClassAnnotation;
-import view.ImageViewer;
+import control.annotation.collector.VisualAnnotationCollector;
+import control.annotation.editor.RectangleEditor;
+import model.annotation.Annotation;
+import model.annotation.BoxAnnotation;
+import model.annotation.MapClassAnnotation;
 import view.annotation.types.ActivePanelContainer;
 import view.annotation.types.AnnotationPanel;
 import view.annotation.types.BoxAnnotationPanel;
 import view.annotation.types.ClassAnnotationPanel;
+import view.image.ImageViewer;
 
 public class ViewAnnotationLink {
 	private ActivePanelContainer activePanelContainer;

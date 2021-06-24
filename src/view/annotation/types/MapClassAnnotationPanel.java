@@ -6,11 +6,11 @@ import java.util.HashMap;
 import javax.swing.JPanel;
 
 import control.ViewAnnotationLink;
-import model.Annotation;
-import model.ArrayClassAnnotation;
-import model.BoxAnnotation;
-import model.ClassAnnotation;
-import model.MapClassAnnotation;
+import model.annotation.Annotation;
+import model.annotation.ArrayClassAnnotation;
+import model.annotation.BoxAnnotation;
+import model.annotation.ClassAnnotation;
+import model.annotation.MapClassAnnotation;
 import view.ChangeEmitter;
 import view.elements.MappablePanel;
 

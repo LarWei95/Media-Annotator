@@ -4,19 +4,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Annotation;
-import view.annotation.media.IMediaAnnotator;
+import model.annotation.Annotation;
+import view.annotation.media.MediaAnnotationPanel;
 
 public class MediaContainer<T> {
 	private ArrayList<MediaReference<T>> medias;
 	private ArrayList<Annotation> annotations;
 	
-	private final IMediaAnnotator<T> annotator;
+	private final MediaAnnotationPanel<T> annotator;
 	private int mediaIndex;
 
-	public MediaContainer (IMediaAnnotator<T> annotator) {
-		this.medias = new ArrayList<MediaReference<T>> ();
-		this.annotations = new ArrayList<Annotation>();
+	public MediaContainer (MediaAnnotationPanel<T> annotator) {
+		this(annotator, new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>());
+	}
+	
+	public MediaContainer (MediaAnnotationPanel<T> annotator, List<MediaReference<T>> medias, List<Annotation> annotations) {
+		this.medias = new ArrayList<MediaReference<T>>(medias);
+		this.annotations = new ArrayList<Annotation>(annotations);
 		
 		this.annotator = annotator;
 		this.mediaIndex = -1;

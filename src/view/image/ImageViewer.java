@@ -1,9 +1,10 @@
-package view;
+package view.image;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import control.RectangleEditor;
+
 import control.ViewAnnotationLink;
+import control.annotation.editor.RectangleEditor;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

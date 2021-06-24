@@ -2,8 +2,8 @@ package view.selection;
 
 import javax.swing.JPanel;
 
-import view.BasicImageViewer;
 import view.ChangeEmitterPanel;
+import view.image.BasicImageViewer;
 
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;

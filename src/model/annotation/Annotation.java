@@ -1,4 +1,4 @@
-package model;
+package model.annotation;
 
 import com.github.cliftonlabs.json_simple.Jsonable;
 

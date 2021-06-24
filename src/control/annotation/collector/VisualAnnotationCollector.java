@@ -1,11 +1,11 @@
-package control;
+package control.annotation.collector;
 
 import java.util.HashMap;
 
-import model.Annotation;
-import model.ArrayClassAnnotation;
-import model.BoxAnnotation;
-import model.MapClassAnnotation;
+import model.annotation.Annotation;
+import model.annotation.ArrayClassAnnotation;
+import model.annotation.BoxAnnotation;
+import model.annotation.MapClassAnnotation;
 
 public class VisualAnnotationCollector extends AnnotationCollector {
 

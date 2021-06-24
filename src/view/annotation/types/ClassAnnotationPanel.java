@@ -1,6 +1,4 @@
 package view.annotation.types;
-import model.Annotation;
-import model.ClassAnnotation;
 import view.ChangeEmitter;
 import view.elements.VariableInput;
 
@@ -10,6 +8,8 @@ import java.awt.Insets;
 import javax.swing.JCheckBox;
 
 import control.ViewAnnotationLink;
+import model.annotation.Annotation;
+import model.annotation.ClassAnnotation;
 
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
