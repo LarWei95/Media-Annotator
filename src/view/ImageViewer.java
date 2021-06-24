@@ -22,6 +22,7 @@ class ImageViewerMouseMotion extends MouseMotionAdapter {
 	public void mouseDragged(MouseEvent e) {
 		// Update bei jeder gedrueckten Bewegung
 		this.imageViewer.link.rectEditor.updateEnd(e.getX(), e.getY(), this.imageViewer.getScale());
+		this.imageViewer.setCurrentRectangleToPanel();
 		this.imageViewer.repaint();
 	}
 }
@@ -98,6 +99,7 @@ public class ImageViewer extends BasicImageViewer {
 		if (currentRect != null) {
 			this.drawRectangle(g, currentRect, newColor);
 		}
+		// TODO CurrentRect immer null, Rectangles Size 0!
 	}
 	
 	private void drawRectangle (Graphics g, Rectangle rect, Color color) {

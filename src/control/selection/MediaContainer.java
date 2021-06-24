@@ -63,10 +63,14 @@ public class MediaContainer<T> {
 		}
 	}
 	
-	public void setSelectedMedia (int index) {
+	public void updateCurrentAnnotation () {
 		if (this.mediaIndex != -1) {
 			this.annotations.set(this.mediaIndex, this.annotator.getAnnotation());
 		}
+	}
+	
+	public void setSelectedMedia (int index) {
+		this.updateCurrentAnnotation();
 		
 		this.annotator.clear();
 		
