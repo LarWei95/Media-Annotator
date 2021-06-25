@@ -8,7 +8,7 @@ import control.io.AnnotationWorkspace;
 import view.annotation.media.MediaAnnotationPanel;
 import view.selection.MediaSelectionPanel;
 
-public class WorkspacePanel<T> extends JPanel {
+public class WorkspaceAnnotationPanel<T> extends JPanel {
 	/**
 	 * 
 	 */
@@ -20,7 +20,7 @@ public class WorkspacePanel<T> extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public WorkspacePanel(AnnotationWorkspace<T> annotationWorkspace, MediaAnnotationPanel<T> mediaAnnotationPanel) {
+	public WorkspaceAnnotationPanel(AnnotationWorkspace<T> annotationWorkspace, MediaAnnotationPanel<T> mediaAnnotationPanel) {
 		this.annotationWorkspace = annotationWorkspace;
 		
 		this.setLayout(new BorderLayout(0, 0));

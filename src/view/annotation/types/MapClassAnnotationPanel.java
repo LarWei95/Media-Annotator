@@ -1,10 +1,6 @@
 package view.annotation.types;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.swing.JPanel;
-
 import control.ViewAnnotationLink;
 import model.annotation.Annotation;
 import model.annotation.ArrayClassAnnotation;
@@ -15,6 +11,11 @@ import view.ChangeEmitter;
 import view.elements.MappablePanel;
 
 public class MapClassAnnotationPanel extends MappableAnnotationPanel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4934129716308187195L;
 
 	/**
 	 * Create the panel.

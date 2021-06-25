@@ -1,20 +1,21 @@
 package view.annotation.media;
 
-import javax.swing.JPanel;
-
 import control.ViewAnnotationLink;
 import control.annotation.editor.RectangleEditor;
 import model.annotation.Annotation;
 import view.ChangeEmitter;
 import view.annotation.types.MapClassAnnotationPanel;
 import view.annotation.types.MappableAnnotationPanel;
-import view.image.ImageViewer;
-
+import view.viewer.image.ImageViewer;
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 
 public class ImageAnnotationPanel extends MediaAnnotationPanel<BufferedImage> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8608652095399255409L;
 	private MapClassAnnotationPanel panel;
 	private RectangleEditor rectEditor;
 	private ImageViewer imagePanel;
@@ -68,7 +69,7 @@ public class ImageAnnotationPanel extends MediaAnnotationPanel<BufferedImage> {
 
 	@Override
 	public void setMedia(BufferedImage media) {
-		this.imagePanel.setImage(media);
+		this.imagePanel.setMedia(media);
 	}
 
 	@Override

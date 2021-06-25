@@ -1,30 +1,27 @@
 package control.io;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JFileChooser;
-
-import control.selection.MediaContainer;
+import control.selection.PaneledMediaContainer;
 import control.selection.MediaReference;
 import model.annotation.Annotation;
 import view.annotation.media.MediaAnnotationPanel;
 
 public class AnnotationWorkspace<T> {
-	private final MediaContainer<T> mediaContainer;
+	private final PaneledMediaContainer<T> mediaContainer;
 	private Path savePath;
 	
 	public AnnotationWorkspace (MediaAnnotationPanel<T> mediaAnnotator, List<MediaReference<T>> medias, List<Annotation> annotations,
 			Path defaultSavePath) {
-		this.mediaContainer = new MediaContainer<T>(mediaAnnotator, medias, annotations);
+		this.mediaContainer = new PaneledMediaContainer<T>(mediaAnnotator, medias, annotations);
 		this.savePath = defaultSavePath;
 	}
 	
-	public MediaContainer<T> getMediaContainer () {
+	public PaneledMediaContainer<T> getMediaContainer () {
 		return this.mediaContainer;
 	}
 	

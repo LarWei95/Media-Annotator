@@ -5,25 +5,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.annotation.Annotation;
-import view.annotation.media.MediaAnnotationPanel;
 
 public class MediaContainer<T> {
-	private ArrayList<MediaReference<T>> medias;
-	private ArrayList<Annotation> annotations;
+	protected final ArrayList<MediaReference<T>> medias;
+	protected final ArrayList<Annotation> annotations;
 	
-	private final MediaAnnotationPanel<T> annotator;
-	private int mediaIndex;
-
-	public MediaContainer (MediaAnnotationPanel<T> annotator) {
-		this(annotator, new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>());
+	public MediaContainer () {
+		this(new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>());
 	}
 	
-	public MediaContainer (MediaAnnotationPanel<T> annotator, List<MediaReference<T>> medias, List<Annotation> annotations) {
+	public MediaContainer (List<MediaReference<T>> medias, List<Annotation> annotations) {
 		this.medias = new ArrayList<MediaReference<T>>(medias);
 		this.annotations = new ArrayList<Annotation>(annotations);
-		
-		this.annotator = annotator;
-		this.mediaIndex = -1;
+	}
+	
+	public MediaContainer (MediaContainer<T> mediaContainer) {
+		this(mediaContainer.medias, mediaContainer.annotations);
+	}
+	
+	public void setContainer (ArrayList<MediaReference<T>> medias, ArrayList<Annotation> annotations) {
+		if (medias.size() == annotations.size()) {
+			this.medias.clear();
+			this.annotations.clear();
+			
+			this.medias.addAll(medias);
+			this.annotations.addAll(annotations);
+		} else {
+			String errMsg = "The given media container contents are not of the same size.\n"+medias.size()+"\n"+annotations.size();
+			throw new IllegalArgumentException(errMsg);
+		}
 	}
 	
 	public final void loadAll () throws IOException{
@@ -65,24 +75,5 @@ public class MediaContainer<T> {
 		for (MediaReference<T> ref: medias) {
 			this.addBlankMedia(ref);
 		}
-	}
-	
-	public void updateCurrentAnnotation () {
-		if (this.mediaIndex != -1) {
-			this.annotations.set(this.mediaIndex, this.annotator.getAnnotation());
-		}
-	}
-	
-	public void setSelectedMedia (int index) {
-		this.updateCurrentAnnotation();
-		
-		this.annotator.clear();
-		
-		if (this.mediaIndex != -1) {
-			this.annotator.setAnnotation(this.annotations.get(index));
-		}
-		
-		this.annotator.setMedia(this.medias.get(index).getMedia());
-		this.mediaIndex = index;
 	}
 }

@@ -1,18 +1,12 @@
 package view.annotation.types;
 
-import javax.swing.JPanel;
-
 import view.ChangeEmitter;
-import view.ChangeEmitterPanel;
 import view.elements.MappablePanel;
-
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.swing.JTabbedPane;
-
 import control.ViewAnnotationLink;
-
 import java.awt.Insets;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -38,12 +32,10 @@ class AnnotationAddAction implements ActionListener {
 
 class TabSelectListener implements ChangeListener {
 	private MappableAnnotationPanel annotationPanel;
-	private JTabbedPane tabs;
 	protected boolean active;
 	
-	public TabSelectListener (MappableAnnotationPanel annotationPanel, JTabbedPane tabs) {
+	public TabSelectListener (MappableAnnotationPanel annotationPanel) {
 		this.annotationPanel = annotationPanel;
-		this.tabs = tabs;
 		this.active = true;
 	}
 	
@@ -120,7 +112,7 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 		add(addAnnotationButton, gbc_addAnnotationButton);
 		
 		annotationTabs = new JTabbedPane(JTabbedPane.RIGHT);
-		this.tabSelectListener = new TabSelectListener(this, this.annotationTabs);
+		this.tabSelectListener = new TabSelectListener(this);
 		annotationTabs.addChangeListener(this.tabSelectListener);
 		GridBagConstraints gbc_annotationTabs = new GridBagConstraints();
 		gbc_annotationTabs.fill = GridBagConstraints.BOTH;

@@ -1,13 +1,11 @@
 package view.elements;
 
-import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
 import view.ChangeEmitter;
 import view.ChangeEmitterPanel;
 
@@ -53,8 +51,6 @@ public class VariableInput extends ChangeEmitterPanel {
 	private JLabel inputLabel;
 	private InputListener listener;
 	private JTextField textInputField;
-	
-	private ValueType valueType;
 	
 	/**
 	 * Create the panel.

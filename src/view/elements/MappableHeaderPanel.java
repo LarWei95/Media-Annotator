@@ -58,6 +58,10 @@ class IdentifierListener implements DocumentListener {
 }
 
 public class MappableHeaderPanel extends ChangeEmitterPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1514524989040596560L;
 	private JTextField nameTextField;
 	private IdentifierListener listener;
 	

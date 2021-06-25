@@ -3,7 +3,7 @@ package view.selection;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
-import control.selection.MediaContainer;
+import control.selection.PaneledMediaContainer;
 import control.selection.MediaReference;
 
 import java.awt.BorderLayout;
@@ -30,14 +30,18 @@ class MediaSelectionListener implements ListSelectionListener {
 }
 
 public class MediaSelectionPanel<T> extends JPanel {
-	private MediaContainer<T> mediaContainer;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5703838836379937753L;
+	private PaneledMediaContainer<T> mediaContainer;
 	private JList<String> mediaList ;
 	private MediaSelectionListener listener;
 	
 	/**
 	 * Create the panel.
 	 */
-	public MediaSelectionPanel(MediaContainer<T> mediaContainer) {
+	public MediaSelectionPanel(PaneledMediaContainer<T> mediaContainer) {
 		this.mediaContainer = mediaContainer;
 		
 		setLayout(new BorderLayout(0, 0));

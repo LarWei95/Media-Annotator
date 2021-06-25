@@ -3,10 +3,8 @@ package model.annotation;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
-import com.github.cliftonlabs.json_simple.Jsoner;
 
 public class BoxAnnotation extends Annotation {
 	public static final String KEY_ANNOTATION = "annotation";

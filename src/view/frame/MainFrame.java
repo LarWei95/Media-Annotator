@@ -1,11 +1,9 @@
 package view.frame;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -13,9 +11,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
-
 import control.io.AnnotationWorkspace;
-import view.workspace.WorkspacePanel;
+import view.workspace.WorkspaceAnnotationPanel;
 
 public class MainFrame extends JFrame {
 
@@ -33,11 +30,13 @@ public class MainFrame extends JFrame {
 	private JMenuItem fileSaveAsItem;
 	private JSeparator separator;
 	private JMenuItem fileQuitItem;
+	private JMenu editMenu;
+	private JMenuItem editWorkspaceMenuItem;
 	
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame(WorkspacePanel<BufferedImage> workspacePanel, AnnotationWorkspace<BufferedImage> annotationWorkspace) {
+	public MainFrame(WorkspaceAnnotationPanel<BufferedImage> workspacePanel, AnnotationWorkspace<BufferedImage> annotationWorkspace) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -93,6 +92,16 @@ public class MainFrame extends JFrame {
 		
 		fileQuitItem = new JMenuItem("Quit");
 		fileMenu.add(fileQuitItem);
+		
+		editMenu = new JMenu("New menu");
+		menuBar.add(editMenu);
+		
+		editWorkspaceMenuItem = new JMenuItem("Workspace ...");
+		editWorkspaceMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		editMenu.add(editWorkspaceMenuItem);
 	}
 
 }

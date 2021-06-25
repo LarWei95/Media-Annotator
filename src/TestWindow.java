@@ -1,34 +1,15 @@
 import java.awt.EventQueue;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-
-import control.io.AnnotationIO;
 import control.io.AnnotationWorkspace;
 import control.selection.ImageReference;
-import control.selection.MediaContainer;
 import control.selection.MediaReference;
 import model.annotation.Annotation;
 import view.annotation.media.ImageAnnotationPanel;
 import view.frame.MainFrame;
-import view.selection.ImageSelectorPanel;
-import view.selection.MediaSelectionPanel;
-import view.workspace.WorkspacePanel;
-
-import java.awt.BorderLayout;
-import javax.swing.JToolBar;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import view.workspace.WorkspaceAnnotationPanel;
 
 public class TestWindow {
 
@@ -85,7 +66,7 @@ public class TestWindow {
 		
 		this.annotationWorkspace = new AnnotationWorkspace<BufferedImage>(this.imageAnnotationPanel, images, annotations, null);
 		
-		WorkspacePanel<BufferedImage> wsPanel = new WorkspacePanel<BufferedImage>(this.annotationWorkspace, this.imageAnnotationPanel);
+		WorkspaceAnnotationPanel<BufferedImage> wsPanel = new WorkspaceAnnotationPanel<BufferedImage>(this.annotationWorkspace, this.imageAnnotationPanel);
 		this.frame = new MainFrame(wsPanel, this.annotationWorkspace);
 	}
 

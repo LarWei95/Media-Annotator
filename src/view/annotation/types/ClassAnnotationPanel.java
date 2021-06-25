@@ -16,6 +16,10 @@ import java.awt.event.ItemEvent;
 
 public class ClassAnnotationPanel extends AnnotationPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5544921177235212436L;
 	private VariableInput variableInput;
 	private JCheckBox forceQuotesCheckbox;
 	
