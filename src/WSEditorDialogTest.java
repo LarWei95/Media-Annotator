@@ -8,6 +8,7 @@ import control.selection.MediaContainer;
 import control.selection.MediaReference;
 import control.selection.MediaReferenceFactory;
 import model.annotation.Annotation;
+import view.ChangeEmitter;
 import view.media.info.ImageInfoPanel;
 import view.workspace.WorkspaceEditorPanel;
 
@@ -32,8 +33,8 @@ public class WSEditorDialogTest {
 		}
 		
 		MediaContainer<BufferedImage> mediaContainer = new MediaContainer<BufferedImage>(images, annotations);
-		ImageInfoPanel imageInfoPanel = new ImageInfoPanel();
 		MediaReferenceFactory<BufferedImage> factory = MediaReferenceFactory.getImageInstance();
+		ImageInfoPanel imageInfoPanel = new ImageInfoPanel();
 		WorkspaceEditorPanel<BufferedImage> panel = new WorkspaceEditorPanel<BufferedImage>(mediaContainer, imageInfoPanel, factory);
 		
 		JFrame frame = new JFrame();

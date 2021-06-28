@@ -3,9 +3,11 @@ package view.workspace;
 import javax.swing.JPanel;
 
 import control.selection.MediaContainer;
+import control.selection.MediaReference;
 import control.selection.MediaReferenceFactory;
 import control.selection.PaneledMediaContainer;
 import control.selection.WorkspaceMediaContainer;
+import view.ChangeEmitterPanel;
 import view.media.info.MediaInfoPanel;
 import view.selection.MediaSelectionPanel;
 import view.viewer.MediaViewer;
@@ -51,7 +53,7 @@ class RemoveMediaListener<T> implements ActionListener {
 	}
 }
 
-public class WorkspaceEditorPanel<T> extends JPanel {
+public class WorkspaceEditorPanel<T> extends ChangeEmitterPanel {
 	/**
 	 * 
 	 */
@@ -68,9 +70,11 @@ public class WorkspaceEditorPanel<T> extends JPanel {
 	 */
 	public WorkspaceEditorPanel(MediaContainer<T> mediaContainer, MediaInfoPanel<T> mediaInfoPanel,
 			MediaReferenceFactory<T> factory) {
+		super(null);
 		setLayout(new BorderLayout(0, 0));
 		
 		this.infoPanel = mediaInfoPanel;
+		this.infoPanel.setSuperChangeEmitter(this);
 		this.mediaContainer = new WorkspaceMediaContainer<T>(mediaContainer, this.infoPanel, factory);
 		this.mediaSelectionPanel = new MediaSelectionPanel<T>(this.mediaContainer);
 		
@@ -90,5 +94,15 @@ public class WorkspaceEditorPanel<T> extends JPanel {
 		JButton removeMediaReferenceButton = new JButton("Remove media");
 		removeMediaReferenceButton.addActionListener(this.removeListener);
 		toolBar.add(removeMediaReferenceButton);
+	}
+
+	@Override
+	public void updateOnForwardedChange() {
+		this.mediaSelectionPanel.updateList();
+		this.infoPanel.updateView();
+	}
+	
+	public WorkspaceMediaContainer<T> getWorkspaceMediaContainer () {
+		return this.mediaContainer;
 	}
 }

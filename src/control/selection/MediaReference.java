@@ -29,6 +29,18 @@ public abstract class MediaReference<T> {
 		return this.path;
 	}
 	
+	public void setPath (String path) {
+		try {
+			this.path = Path.of(path);
+			
+			if (this.isValid()) {
+				this.load();
+			}
+		} catch (Exception e) {
+			this.path = null;
+		}
+	}
+	
 	public T getMedia () {
 		return this.media;
 	}
@@ -52,11 +64,15 @@ public abstract class MediaReference<T> {
 	}
 	
 	public boolean isValid () {
-		if (this.path.toFile().isFile()) {
-			try {
-				this.loadMedia();
-				return true;
-			} catch (Exception e) {
+		if (this.path != null) {
+			if (this.path.toFile().isFile()) {
+				try {
+					this.loadMedia();
+					return true;
+				} catch (Exception e) {
+					return false;
+				}
+			} else {
 				return false;
 			}
 		} else {

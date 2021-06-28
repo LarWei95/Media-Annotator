@@ -5,10 +5,15 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import control.selection.MediaReference;
+import view.ChangeEmitter;
+import view.ChangeEmitterPanel;
 
 import java.awt.Insets;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,8 +24,59 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 
-public class MediaReferenceInfoPanel<T> extends JPanel {
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+class PathOpenListener implements ActionListener {
+	private MediaReferenceInfoPanel<?> infoPanel;
+	
+	public PathOpenListener (MediaReferenceInfoPanel<?> infoPanel) {
+		this.infoPanel = infoPanel;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		this.infoPanel.setPathByFileChooser();
+	}
+	
+}
+
+class PathListener implements DocumentListener {
+	private MediaReferenceInfoPanel<?> infoPanel;
+	public boolean active;
+	
+	public PathListener (MediaReferenceInfoPanel<?> infoPanel) {
+		this.infoPanel = infoPanel;
+		this.active = true;
+	}
+	
+	
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		if (this.active) {
+			this.infoPanel.setPathByInputField();
+		}
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		if (this.active) {
+			this.infoPanel.setPathByInputField();
+		}
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		if (this.active) {
+			this.infoPanel.setPathByInputField();
+		}
+	}
+	
+}
+
+public class MediaReferenceInfoPanel<T> extends ChangeEmitterPanel {
 	/**
 	 * 
 	 */
@@ -33,10 +89,14 @@ public class MediaReferenceInfoPanel<T> extends JPanel {
 	private JLabel savedChksumOutLabel;
 	private JButton overwriteChksumButton;
 	
+	private PathOpenListener openListener;
+	private PathListener pathListener;
 	/**
 	 * Create the panel.
 	 */
-	public MediaReferenceInfoPanel() {
+	public MediaReferenceInfoPanel(ChangeEmitter changeEmitter) {
+		super(changeEmitter);
+		
 		this.mediaReference = null;
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -55,6 +115,8 @@ public class MediaReferenceInfoPanel<T> extends JPanel {
 		add(filePathLabel, gbc_filePathLabel);
 		
 		this.filePathTextField = new JTextField();
+		this.pathListener = new PathListener(this);
+		this.filePathTextField.getDocument().addDocumentListener(this.pathListener);
 		GridBagConstraints gbc_filePathTextField = new GridBagConstraints();
 		gbc_filePathTextField.insets = new Insets(0, 0, 5, 5);
 		gbc_filePathTextField.fill = GridBagConstraints.BOTH;
@@ -64,6 +126,8 @@ public class MediaReferenceInfoPanel<T> extends JPanel {
 		this.filePathTextField.setColumns(10);
 		
 		this.filePathOpenButton = new JButton("Select ...");
+		this.openListener = new PathOpenListener(this);
+		filePathOpenButton.addActionListener(this.openListener);
 		GridBagConstraints gbc_filePathOpenButton = new GridBagConstraints();
 		gbc_filePathOpenButton.insets = new Insets(0, 0, 5, 0);
 		gbc_filePathOpenButton.fill = GridBagConstraints.BOTH;
@@ -125,7 +189,10 @@ public class MediaReferenceInfoPanel<T> extends JPanel {
 	}
 	
 	private void updateCurrentChecksum () throws NoSuchAlgorithmException, IOException {
-		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		
+		System.out.println(this.mediaReference.getPath());
+		
 		FileInputStream s = new FileInputStream(this.mediaReference.getPath().toFile());
 		md.update(s.readAllBytes());
 		
@@ -140,25 +207,65 @@ public class MediaReferenceInfoPanel<T> extends JPanel {
 	
 	public void setMediaReference (MediaReference<T> mediaReference) {
 		this.mediaReference = mediaReference;
-		Path path = this.mediaReference.getPath();
 		
-		if (path != null) {
+		this.pathListener.active = false;
+		
+		if (this.mediaReference.isValid()) {
 			this.filePathTextField.setText(this.mediaReference.getPath().toAbsolutePath().toString());
 			
 			try {
 				this.updateCurrentChecksum();
 			} catch (Exception e) {
 				e.printStackTrace();
+				this.fileChksumOutLabel.setText("<Invalid>");
 			}
 		} else {
-			this.filePathTextField.setText("");
+			this.fileChksumOutLabel.setText("<Invalid>");
 		}
 		
+		if (this.mediaReference.getPath() != null) {
+			this.filePathTextField.setText(this.mediaReference.getPath().toAbsolutePath().toString());
+		} else {
+			this.filePathTextField.setText("<Invalid>");
+		}
 		
-		
+		this.pathListener.active = true;
 	}
 	
 	public MediaReference<T> getMediaReference () {
 		return this.mediaReference;
+	}
+
+	@Override
+	public void updateOnForwardedChange() {
+		String pathInput = this.filePathTextField.getText();
+		this.mediaReference.setPath(pathInput);
+		
+	}
+	
+	protected void setPathByInputField () {
+		this.forwardChange();
+		
+		try {
+			this.updateCurrentChecksum();
+		} catch (Exception e) {
+		}
+	}
+	
+	protected void setPathByFileChooser () {
+		JFileChooser chooser = new JFileChooser();
+		int ret = chooser.showOpenDialog(null);
+		
+		if (ret == JFileChooser.APPROVE_OPTION) {
+			Path path = chooser.getSelectedFile().toPath();
+			
+			this.filePathTextField.setText(path.toAbsolutePath().toString());
+			this.forwardChange();
+			
+			try {
+				this.updateCurrentChecksum();
+			} catch (Exception e) {
+			}
+		}
 	}
 }

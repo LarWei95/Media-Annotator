@@ -3,9 +3,11 @@ package view.media.info;
 import javax.swing.JPanel;
 
 import control.selection.MediaReference;
+import view.ChangeEmitter;
+import view.ChangeEmitterPanel;
 import view.workspace.MediaReferenceInfoPanel;
 
-public abstract class MediaInfoPanel<T> extends JPanel {
+public abstract class MediaInfoPanel<T> extends ChangeEmitterPanel {
 	/**
 	 * 
 	 */
@@ -13,8 +15,9 @@ public abstract class MediaInfoPanel<T> extends JPanel {
 	
 	protected MediaReferenceInfoPanel<T> refInfoPanel;
 	
-	public MediaInfoPanel () {
-		this.refInfoPanel = new MediaReferenceInfoPanel<T>();
+	public MediaInfoPanel (ChangeEmitter changeEmitter) {
+		super(changeEmitter);
+		this.refInfoPanel = new MediaReferenceInfoPanel<T>(this);
 	}
 
 	public abstract MediaReference<T> getMediaReference();
@@ -22,4 +25,6 @@ public abstract class MediaInfoPanel<T> extends JPanel {
 	public abstract void setMediaReference(MediaReference<T> media);
 
 	public abstract void clear();
+	
+	public abstract void updateView ();
 }

@@ -58,6 +58,13 @@ public class MediaSelectionPanel<T> extends JPanel {
 		this.updateList();
 	}
 	
+	public void setMediaContainer (SelectionMediaContainer<T> mediaContainer) {
+		this.listener.active = false;
+		this.mediaContainer = mediaContainer;
+		this.updateList();
+		this.listener.active = true;
+	}
+	
 	public void updateList () {
 		DefaultListModel<String> newListModel = new DefaultListModel<String>();
 		
@@ -67,13 +74,19 @@ public class MediaSelectionPanel<T> extends JPanel {
 			path = media.getPath();
 			
 			if (path != null) {
-				newListModel.addElement(media.getBaseName());
+				if (path.toString().trim() != "") {
+					newListModel.addElement(path.getFileName().toString());
+				} else {
+					newListModel.addElement("<Empty>");
+				}
 			} else {
 				newListModel.addElement("<Empty>");
 			}
 		}
-		
+		this.listener.active = false;
 		this.mediaList.setModel(newListModel);
+		this.mediaList.setSelectedIndex(this.mediaContainer.getMediaIndex());
+		this.listener.active = true;
 	}
 	
 	public void setSelectionFromMediaContainer () {

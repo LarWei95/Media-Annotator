@@ -26,6 +26,10 @@ public class PaneledMediaContainer<T> extends SelectionMediaContainer<T>{
 		this.annotator = annotator;
 	}
 	
+	public MediaAnnotationPanel<T> getAnnotator () {
+		return this.annotator;
+	}
+	
 	public void setContainer (ArrayList<MediaReference<T>> medias, ArrayList<Annotation> annotations) {
 		super.setContainer(medias, annotations);
 		
@@ -47,11 +51,11 @@ public class PaneledMediaContainer<T> extends SelectionMediaContainer<T>{
 		
 		this.annotator.clear();
 		
-		if (this.mediaIndex != -1) {
+		if (index != -1) {
 			this.annotator.setAnnotation(this.annotations.get(index));
+			this.annotator.setMedia(this.medias.get(index).getMedia());
+			super.setSelectedMedia(index);
 		}
 		
-		this.annotator.setMedia(this.medias.get(index).getMedia());
-		super.setSelectedMedia(index);
 	}
 }

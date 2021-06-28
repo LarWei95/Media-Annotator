@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
 import control.io.AnnotationWorkspace;
+import control.selection.MediaContainer;
+import control.selection.PaneledMediaContainer;
 import view.media.MediaAnnotationPanel;
 import view.selection.MediaSelectionPanel;
 
@@ -30,5 +32,18 @@ public class WorkspaceAnnotationPanel<T> extends JPanel {
 		
 		this.mediaSelectionPanel = new MediaSelectionPanel<T>(this.annotationWorkspace.getMediaContainer());
 		this.add(this.mediaSelectionPanel, BorderLayout.WEST);
+	}
+	
+	public  AnnotationWorkspace<T> getAnnotationWorkspace () {
+		return this.annotationWorkspace;
+	}
+	
+	public void setMediaContainer (MediaContainer<T> mediaContainer) {
+		this.annotationWorkspace.setMediaContainer(mediaContainer);
+		this.mediaSelectionPanel.setMediaContainer(this.annotationWorkspace.getMediaContainer());
+	}
+	
+	public PaneledMediaContainer<T> getMediaContainer () {
+		return this.annotationWorkspace.getMediaContainer();
 	}
 }

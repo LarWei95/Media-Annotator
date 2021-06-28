@@ -3,19 +3,21 @@ import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+
+import control.framefactory.FrameFactory;
 import control.io.AnnotationWorkspace;
 import control.selection.ImageReference;
 import control.selection.MediaReference;
+import control.selection.MediaReferenceFactory;
 import model.annotation.Annotation;
 import view.frame.MainFrame;
 import view.media.ImageAnnotationPanel;
+import view.media.info.ImageInfoPanel;
 import view.workspace.WorkspaceAnnotationPanel;
 
 public class TestWindow {
 
-	private MainFrame frame;
-	private ImageAnnotationPanel imageAnnotationPanel;
-	private AnnotationWorkspace<BufferedImage> annotationWorkspace;
+	private MainFrame<BufferedImage> frame;
 
 	/**
 	 * Launch the application.
@@ -44,30 +46,7 @@ public class TestWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		this.imageAnnotationPanel = new ImageAnnotationPanel();
-		
-		Path[] paths = new Path[] {
-				Path.of("G:\\Eclipse-Projekte\\GTA_Casino\\Screencaps\\2021-06-17---14-30-10-367495\\2021-06-17---14-30-13-477013.png"),
-				Path.of("G:\\Eclipse-Projekte\\GTA_Casino\\Screencaps\\2021-06-17---14-40-29-041192\\2021-06-17---14-42-38-533731.png")
-		};
-		
-		ArrayList<MediaReference<BufferedImage>> images = new ArrayList<MediaReference<BufferedImage>>();
-		ArrayList<Annotation> annotations = new ArrayList<Annotation>();
-		
-		for (Path path: paths) {
-			System.out.println(path);
-			try {
-				images.add(new ImageReference(path, ImageIO.read(path.toFile())));
-				annotations.add(null);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		this.annotationWorkspace = new AnnotationWorkspace<BufferedImage>(this.imageAnnotationPanel, images, annotations, null);
-		
-		WorkspaceAnnotationPanel<BufferedImage> wsPanel = new WorkspaceAnnotationPanel<BufferedImage>(this.annotationWorkspace, this.imageAnnotationPanel);
-		this.frame = new MainFrame(wsPanel, this.annotationWorkspace);
+		this.frame = FrameFactory.getBufferedImageMainFrame();
 	}
 
 }

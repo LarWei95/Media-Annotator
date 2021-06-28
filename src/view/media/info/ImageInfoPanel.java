@@ -24,7 +24,7 @@ public class ImageInfoPanel extends MediaInfoPanel<BufferedImage> {
 	 * Create the panel.
 	 */
 	public ImageInfoPanel() {
-		super();
+		super(null);
 		
 		this.setLayout(new BorderLayout(0, 0));
 		
@@ -48,4 +48,15 @@ public class ImageInfoPanel extends MediaInfoPanel<BufferedImage> {
 		this.imagePanel.setMedia(media.getMedia());
 		this.refInfoPanel.setMediaReference(media);
 	}
+
+	@Override
+	public void updateOnForwardedChange() {
+		
+	}
+
+	@Override
+	public void updateView() {
+		this.imagePanel.setMedia(this.refInfoPanel.getMediaReference().getMedia());
+	}
+
 }

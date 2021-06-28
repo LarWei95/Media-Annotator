@@ -66,13 +66,15 @@ public class WorkspaceMediaContainer<T> extends SelectionMediaContainer<T> {
 	}
 	
 	public void removeCurrentMediaReference () {
-		this.medias.remove(this.mediaIndex);
-		this.annotations.remove(this.mediaIndex);
-		
-		int newMediaIndex = this.medias.size() - 1;
-		
-		System.out.println(this.medias.size()+" "+newMediaIndex);
-		
-		this.setSelectedMedia(newMediaIndex, false);	
+		if (this.mediaIndex != -1) {
+			this.medias.remove(this.mediaIndex);
+			this.annotations.remove(this.mediaIndex);
+			
+			int newMediaIndex = this.medias.size() - 1;
+			
+			System.out.println(this.medias.size()+" "+newMediaIndex);
+			
+			this.setSelectedMedia(newMediaIndex, false);	
+		}
 	}
 }
