@@ -9,7 +9,7 @@ import javax.swing.JFileChooser;
 import control.selection.PaneledMediaContainer;
 import control.selection.MediaReference;
 import model.annotation.Annotation;
-import view.annotation.media.MediaAnnotationPanel;
+import view.media.MediaAnnotationPanel;
 
 public class AnnotationWorkspace<T> {
 	private final PaneledMediaContainer<T> mediaContainer;

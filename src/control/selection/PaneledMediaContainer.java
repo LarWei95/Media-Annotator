@@ -3,13 +3,12 @@ package control.selection;
 import java.util.ArrayList;
 import java.util.List;
 import model.annotation.Annotation;
-import view.annotation.media.MediaAnnotationPanel;
+import view.media.MediaAnnotationPanel;
 
-public class PaneledMediaContainer<T> extends MediaContainer<T>{
+public class PaneledMediaContainer<T> extends SelectionMediaContainer<T>{
 	
 	
 	private final MediaAnnotationPanel<T> annotator;
-	private int mediaIndex;
 
 	public PaneledMediaContainer (MediaAnnotationPanel<T> annotator) {
 		this(annotator, new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>());
@@ -19,14 +18,12 @@ public class PaneledMediaContainer<T> extends MediaContainer<T>{
 		super(medias, annotations);
 		
 		this.annotator = annotator;
-		this.mediaIndex = -1;
 	}
 	
 	public PaneledMediaContainer(MediaAnnotationPanel<T> annotator, MediaContainer<T> mediaContainer) {
 		super(mediaContainer);
 		
 		this.annotator = annotator;
-		this.mediaIndex = -1;
 	}
 	
 	public void setContainer (ArrayList<MediaReference<T>> medias, ArrayList<Annotation> annotations) {
@@ -55,6 +52,6 @@ public class PaneledMediaContainer<T> extends MediaContainer<T>{
 		}
 		
 		this.annotator.setMedia(this.medias.get(index).getMedia());
-		this.mediaIndex = index;
+		super.setSelectedMedia(index);
 	}
 }

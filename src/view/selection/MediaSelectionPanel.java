@@ -4,9 +4,11 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
 import control.selection.PaneledMediaContainer;
+import control.selection.SelectionMediaContainer;
 import control.selection.MediaReference;
 
 import java.awt.BorderLayout;
+import java.nio.file.Path;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -15,18 +17,19 @@ import javax.swing.event.ListSelectionEvent;
 
 class MediaSelectionListener implements ListSelectionListener {
 	private MediaSelectionPanel<?> panel;
+	public boolean active;
 	
 	public MediaSelectionListener (MediaSelectionPanel<?> panel) {
 		this.panel = panel;
+		this.active = true;
 	}
 	
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		if (e.getValueIsAdjusting() == false) {
+		if (e.getValueIsAdjusting() == false && this.active) {
 			this.panel.updateSelection();
 		}
 	}
-	
 }
 
 public class MediaSelectionPanel<T> extends JPanel {
@@ -34,14 +37,14 @@ public class MediaSelectionPanel<T> extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 5703838836379937753L;
-	private PaneledMediaContainer<T> mediaContainer;
+	private SelectionMediaContainer<T> mediaContainer;
 	private JList<String> mediaList ;
 	private MediaSelectionListener listener;
 	
 	/**
 	 * Create the panel.
 	 */
-	public MediaSelectionPanel(PaneledMediaContainer<T> mediaContainer) {
+	public MediaSelectionPanel(SelectionMediaContainer<T> mediaContainer) {
 		this.mediaContainer = mediaContainer;
 		
 		setLayout(new BorderLayout(0, 0));
@@ -58,11 +61,25 @@ public class MediaSelectionPanel<T> extends JPanel {
 	public void updateList () {
 		DefaultListModel<String> newListModel = new DefaultListModel<String>();
 		
+		Path path;
+		
 		for (MediaReference<T> media: this.mediaContainer.getMedias()) {
-			newListModel.addElement(media.getBaseName());
+			path = media.getPath();
+			
+			if (path != null) {
+				newListModel.addElement(media.getBaseName());
+			} else {
+				newListModel.addElement("<Empty>");
+			}
 		}
 		
 		this.mediaList.setModel(newListModel);
+	}
+	
+	public void setSelectionFromMediaContainer () {
+		int index = this.mediaContainer.getMediaIndex();
+		
+		this.mediaList.setSelectedIndex(index);		
 	}
 	
 	public void updateSelection () {

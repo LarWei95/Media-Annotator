@@ -1,4 +1,4 @@
-package view.annotation.media;
+package view.media;
 
 import javax.swing.JPanel;
 

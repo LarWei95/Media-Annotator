@@ -7,8 +7,8 @@ import control.io.AnnotationWorkspace;
 import control.selection.ImageReference;
 import control.selection.MediaReference;
 import model.annotation.Annotation;
-import view.annotation.media.ImageAnnotationPanel;
 import view.frame.MainFrame;
+import view.media.ImageAnnotationPanel;
 import view.workspace.WorkspaceAnnotationPanel;
 
 public class TestWindow {

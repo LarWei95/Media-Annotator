@@ -5,24 +5,40 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
+
+import control.selection.MediaReference;
+
 import java.awt.Insets;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.file.Path;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import javax.swing.JButton;
 
-public class MediaInfoPanel extends JPanel {
+public class MediaReferenceInfoPanel<T> extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6960195772905680468L;
+	private MediaReference<T> mediaReference;
+	
 	private JTextField filePathTextField;
 	private JButton filePathOpenButton;
 	private JLabel fileChksumOutLabel;
 	private JLabel savedChksumOutLabel;
 	private JButton overwriteChksumButton;
-
+	
 	/**
 	 * Create the panel.
 	 */
-	public MediaInfoPanel() {
+	public MediaReferenceInfoPanel() {
+		this.mediaReference = null;
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0};
@@ -94,5 +110,55 @@ public class MediaInfoPanel extends JPanel {
 		gbc_overwriteChksumButton.gridy = 2;
 		add(this.overwriteChksumButton, gbc_overwriteChksumButton);
 	}
-
+	
+	protected static String bytesToHex(byte[] bytes) {
+		StringBuilder builder = new StringBuilder();
+		
+		byte current;
+		
+		for (int i = 0; i < bytes.length; i++) {
+			current = bytes[i];
+			builder.append(String.format("%02X", current));
+		}
+		
+		return builder.toString();
+	}
+	
+	private void updateCurrentChecksum () throws NoSuchAlgorithmException, IOException {
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		FileInputStream s = new FileInputStream(this.mediaReference.getPath().toFile());
+		md.update(s.readAllBytes());
+		
+		byte[] bytes = md.digest();
+		
+		s.close();
+		
+		String str = bytesToHex(bytes);
+		
+		this.fileChksumOutLabel.setText(str);
+	}
+	
+	public void setMediaReference (MediaReference<T> mediaReference) {
+		this.mediaReference = mediaReference;
+		Path path = this.mediaReference.getPath();
+		
+		if (path != null) {
+			this.filePathTextField.setText(this.mediaReference.getPath().toAbsolutePath().toString());
+			
+			try {
+				this.updateCurrentChecksum();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			this.filePathTextField.setText("");
+		}
+		
+		
+		
+	}
+	
+	public MediaReference<T> getMediaReference () {
+		return this.mediaReference;
+	}
 }

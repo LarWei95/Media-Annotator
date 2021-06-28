@@ -12,6 +12,19 @@ public abstract class MediaReference<T> {
 		this.media = media;
 	}
 	
+	public MediaReference (Path path, boolean load) throws IOException{
+		this.path = path;
+		
+		if (load) {
+			this.load();
+		}
+	}
+	
+	public MediaReference() {
+		this.path = null;
+		this.media = null;
+	}
+	
 	public Path getPath () {
 		return this.path;
 	}
@@ -36,5 +49,18 @@ public abstract class MediaReference<T> {
 	
 	public String getBaseName () {
 		return this.path.getFileName().toString();
+	}
+	
+	public boolean isValid () {
+		if (this.path.toFile().isFile()) {
+			try {
+				this.loadMedia();
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 }

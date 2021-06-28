@@ -48,6 +48,16 @@ public class MediaContainer<T> {
 		}
 	}
 	
+	public final boolean[] getValidities () {
+		boolean[] valids = new boolean[this.medias.size()];
+		
+		for (int i = 0; i < valids.length; i++) {
+			valids[i] = this.medias.get(i).isValid();
+		}
+		
+		return valids;
+	}
+	
 	public ArrayList<MediaReference<T>> getMedias () {
 		return this.medias;
 	}

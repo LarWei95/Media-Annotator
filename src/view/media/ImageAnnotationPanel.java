@@ -1,4 +1,4 @@
-package view.annotation.media;
+package view.media;
 
 import control.ViewAnnotationLink;
 import control.annotation.editor.RectangleEditor;
