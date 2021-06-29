@@ -4,23 +4,30 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.MediaType;
 import model.annotation.Annotation;
 
 public class MediaContainer<T> {
+	protected final MediaType mediaType;
 	protected final ArrayList<MediaReference<T>> medias;
 	protected final ArrayList<Annotation> annotations;
 	
-	public MediaContainer () {
-		this(new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>());
+	public MediaContainer (MediaType mediaType) {
+		this(mediaType, new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>());
 	}
 	
-	public MediaContainer (List<MediaReference<T>> medias, List<Annotation> annotations) {
+	public MediaContainer (MediaType mediaType, List<MediaReference<T>> medias, List<Annotation> annotations) {
+		this.mediaType = mediaType;
 		this.medias = new ArrayList<MediaReference<T>>(medias);
 		this.annotations = new ArrayList<Annotation>(annotations);
 	}
 	
 	public MediaContainer (MediaContainer<T> mediaContainer) {
-		this(mediaContainer.medias, mediaContainer.annotations);
+		this(mediaContainer.mediaType, mediaContainer.medias, mediaContainer.annotations);
+	}
+	
+	public final MediaType getMediaType () {
+		return this.mediaType;
 	}
 	
 	public void setContainer (ArrayList<MediaReference<T>> medias, ArrayList<Annotation> annotations) {

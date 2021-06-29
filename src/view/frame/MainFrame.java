@@ -187,6 +187,8 @@ public class MainFrame<T> extends JFrame {
 		for (int i = 0; i < old.getMedias().size(); i++) {
 			System.out.println("New: "+old.getMedias().get(i)+" "+old.getAnnotations().get(i));
 		}
+		
+		this.validate();
 	}
 	
 	protected void updateCurrentAnnotation () {

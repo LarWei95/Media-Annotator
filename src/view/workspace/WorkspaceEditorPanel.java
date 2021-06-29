@@ -1,6 +1,7 @@
 package view.workspace;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import control.selection.MediaContainer;
 import control.selection.MediaReference;
@@ -16,31 +17,60 @@ import java.awt.BorderLayout;
 import javax.swing.JToolBar;
 import javax.swing.JMenuItem;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Path;
 import java.awt.event.ActionEvent;
 
 class AddMediaListener<T> implements ActionListener {
+	private JPanel panel;
 	private WorkspaceMediaContainer<T> container;
 	private MediaSelectionPanel<T> mediaSelectionPanel;
+	private MediaReferenceFactory<T> factory;
 	
-	public AddMediaListener (WorkspaceMediaContainer<T> container, MediaSelectionPanel<T> mediaSelectionPanel) {
+	public AddMediaListener (JPanel panel, WorkspaceMediaContainer<T> container, MediaSelectionPanel<T> mediaSelectionPanel, MediaReferenceFactory<T> factory) {
+		this.panel = panel;
 		this.container = container;
 		this.mediaSelectionPanel = mediaSelectionPanel;
+		this.factory = factory;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		this.container.addEmptyMediaReference();
+		JFileChooser chooser = new JFileChooser();
+		chooser.setMultiSelectionEnabled(true);
+		int ret = chooser.showOpenDialog(null);
+		
+		if (ret == JFileChooser.APPROVE_OPTION) {
+			File[] selectedFiles = chooser.getSelectedFiles();
+			
+			MediaReference<T> ref;
+			
+			for (File file: selectedFiles) {
+				try {
+					ref = factory.generateByPath(file.toPath());
+					this.container.addBlankMedia(ref);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		
 		this.mediaSelectionPanel.updateList();
 		this.mediaSelectionPanel.setSelectionFromMediaContainer();
+		this.panel.validate();
 	}
 }
 
 class RemoveMediaListener<T> implements ActionListener {
+	private JPanel panel;
 	private WorkspaceMediaContainer<T> container;
 	private MediaSelectionPanel<T> mediaSelectionPanel;
 	
-	public RemoveMediaListener (WorkspaceMediaContainer<T> container, MediaSelectionPanel<T> mediaSelectionPanel) {
+	public RemoveMediaListener (JPanel panel, WorkspaceMediaContainer<T> container, MediaSelectionPanel<T> mediaSelectionPanel) {
+		this.panel = panel;
 		this.container = container;
 		this.mediaSelectionPanel = mediaSelectionPanel;
 	}
@@ -50,6 +80,7 @@ class RemoveMediaListener<T> implements ActionListener {
 		this.container.removeCurrentMediaReference();
 		this.mediaSelectionPanel.updateList();
 		this.mediaSelectionPanel.setSelectionFromMediaContainer();
+		this.panel.validate();
 	}
 }
 
@@ -78,16 +109,19 @@ public class WorkspaceEditorPanel<T> extends ChangeEmitterPanel {
 		this.mediaContainer = new WorkspaceMediaContainer<T>(mediaContainer, this.infoPanel, factory);
 		this.mediaSelectionPanel = new MediaSelectionPanel<T>(this.mediaContainer);
 		
-		this.addListener = new AddMediaListener<T>(this.mediaContainer, this.mediaSelectionPanel);
-		this.removeListener = new RemoveMediaListener<T>(this.mediaContainer, this.mediaSelectionPanel);
+		this.addListener = new AddMediaListener<T>(this, this.mediaContainer, this.mediaSelectionPanel, factory);
+		this.removeListener = new RemoveMediaListener<T>(this, this.mediaContainer, this.mediaSelectionPanel);
 		
-		this.add(this.mediaSelectionPanel, BorderLayout.WEST);
+		JScrollPane scroll = new JScrollPane();
+		this.add(scroll, BorderLayout.WEST);
+		scroll.setViewportView(this.mediaSelectionPanel);
+		
 		this.add(this.infoPanel, BorderLayout.CENTER);
 		
 		JToolBar toolBar = new JToolBar();
 		add(toolBar, BorderLayout.NORTH);
 		
-		JButton addMediaReferenceButton = new JButton("Add media");
+		JButton addMediaReferenceButton = new JButton("Add media(s)");
 		addMediaReferenceButton.addActionListener(this.addListener);
 		toolBar.add(addMediaReferenceButton);
 		

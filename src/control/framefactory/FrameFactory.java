@@ -8,6 +8,7 @@ import java.util.List;
 import control.io.AnnotationWorkspace;
 import control.selection.MediaReference;
 import control.selection.MediaReferenceFactory;
+import model.MediaType;
 import model.annotation.Annotation;
 import view.frame.MainFrame;
 import view.media.ImageAnnotationPanel;
@@ -73,6 +74,7 @@ class ImageFrameFactory extends AFrameFactory<BufferedImage> {
 	protected WorkspaceAnnotationPanel<BufferedImage> getWorkspace() {
 		ImageAnnotationPanel annotationPanel = new ImageAnnotationPanel();
 		AnnotationWorkspace<BufferedImage> workspace = new AnnotationWorkspace<BufferedImage>(
+				MediaType.IMAGE,
 				annotationPanel,
 				new ArrayList<MediaReference<BufferedImage>>(),
 				new ArrayList<Annotation>(),
@@ -88,6 +90,7 @@ class ImageFrameFactory extends AFrameFactory<BufferedImage> {
 			List<Annotation> annotations) {
 		ImageAnnotationPanel annotationPanel = new ImageAnnotationPanel();
 		AnnotationWorkspace<BufferedImage> workspace = new AnnotationWorkspace<BufferedImage>(
+				MediaType.IMAGE,
 				annotationPanel,
 				references,
 				annotations,
@@ -113,6 +116,7 @@ class ImageFrameFactory extends AFrameFactory<BufferedImage> {
 			List<Annotation> annotations, Path savePath) {
 		ImageAnnotationPanel annotationPanel = new ImageAnnotationPanel();
 		AnnotationWorkspace<BufferedImage> workspace = new AnnotationWorkspace<BufferedImage>(
+				MediaType.IMAGE,
 				annotationPanel,
 				references,
 				annotations,
@@ -127,6 +131,7 @@ class ImageFrameFactory extends AFrameFactory<BufferedImage> {
 	protected WorkspaceAnnotationPanel<BufferedImage> getWorkspace(Path savePath) {
 		ImageAnnotationPanel annotationPanel = new ImageAnnotationPanel();
 		AnnotationWorkspace<BufferedImage> workspace = new AnnotationWorkspace<BufferedImage>(
+				MediaType.IMAGE,
 				annotationPanel,
 				new ArrayList<MediaReference<BufferedImage>>(),
 				new ArrayList<Annotation>(),

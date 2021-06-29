@@ -1,8 +1,10 @@
 package view.workspace;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import control.io.AnnotationWorkspace;
 import control.selection.MediaContainer;
@@ -27,11 +29,14 @@ public class WorkspaceAnnotationPanel<T> extends JPanel {
 		
 		this.setLayout(new BorderLayout(0, 0));
 		
+		this.mediaSelectionPanel = new MediaSelectionPanel<T>(this.annotationWorkspace.getMediaContainer());
+		JScrollPane scroll = new JScrollPane();
+		this.add(scroll, BorderLayout.WEST);
+		scroll.setViewportView(this.mediaSelectionPanel);
+		
 		this.mediaAnnotationPanel = mediaAnnotationPanel;
 		this.add(this.mediaAnnotationPanel, BorderLayout.CENTER);
 		
-		this.mediaSelectionPanel = new MediaSelectionPanel<T>(this.annotationWorkspace.getMediaContainer());
-		this.add(this.mediaSelectionPanel, BorderLayout.WEST);
 	}
 	
 	public  AnnotationWorkspace<T> getAnnotationWorkspace () {

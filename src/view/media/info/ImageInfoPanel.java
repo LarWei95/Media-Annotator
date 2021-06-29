@@ -45,7 +45,7 @@ public class ImageInfoPanel extends MediaInfoPanel<BufferedImage> {
 
 	@Override
 	public void setMediaReference(MediaReference<BufferedImage> media) {
-		this.imagePanel.setMedia(media.getMedia());
+		this.imagePanel.setMedia(media.getMediaLoaded());
 		this.refInfoPanel.setMediaReference(media);
 	}
 
@@ -56,7 +56,11 @@ public class ImageInfoPanel extends MediaInfoPanel<BufferedImage> {
 
 	@Override
 	public void updateView() {
-		this.imagePanel.setMedia(this.refInfoPanel.getMediaReference().getMedia());
+		MediaReference<BufferedImage> image = this.refInfoPanel.getMediaReference();
+		
+		if (image != null) {
+			this.imagePanel.setMedia(image.getMedia());
+		}
 	}
 
 }

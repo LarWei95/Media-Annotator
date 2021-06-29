@@ -3,6 +3,7 @@ package control.selection;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.MediaType;
 import model.annotation.Annotation;
 import view.media.info.MediaInfoPanel;
 
@@ -11,13 +12,13 @@ public class WorkspaceMediaContainer<T> extends SelectionMediaContainer<T> {
 	private final MediaInfoPanel<T> mediaInfoPanel;
 	private final MediaReferenceFactory<T> mediaReferenceFactory;
 	
-	public WorkspaceMediaContainer (MediaInfoPanel<T> mediaInfoPanel, MediaReferenceFactory<T> mediaReferenceFactory) {
-		this(new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>(), mediaInfoPanel, mediaReferenceFactory);
+	public WorkspaceMediaContainer (MediaType mediaType, MediaInfoPanel<T> mediaInfoPanel, MediaReferenceFactory<T> mediaReferenceFactory) {
+		this(mediaType, new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>(), mediaInfoPanel, mediaReferenceFactory);
 	}
 	
-	public WorkspaceMediaContainer (List<MediaReference<T>> medias, List<Annotation> annotations, MediaInfoPanel<T> mediaInfoPanel,
+	public WorkspaceMediaContainer (MediaType mediaType, List<MediaReference<T>> medias, List<Annotation> annotations, MediaInfoPanel<T> mediaInfoPanel,
 			MediaReferenceFactory<T> mediaReferenceFactory) {
-		super(medias, annotations);
+		super(mediaType, medias, annotations);
 		
 		this.mediaInfoPanel = mediaInfoPanel;
 		this.mediaReferenceFactory = mediaReferenceFactory;
@@ -25,7 +26,7 @@ public class WorkspaceMediaContainer<T> extends SelectionMediaContainer<T> {
 	
 	public WorkspaceMediaContainer (MediaContainer<T> mediaContainer, MediaInfoPanel<T> mediaInfoPanel,
 			MediaReferenceFactory<T> mediaReferenceFactory) {
-		this(mediaContainer.medias, mediaContainer.annotations, mediaInfoPanel, mediaReferenceFactory);
+		this(mediaContainer.mediaType, mediaContainer.medias, mediaContainer.annotations, mediaInfoPanel, mediaReferenceFactory);
 	}
 	
 	public void updateCurrentMediaReference () {
@@ -54,15 +55,6 @@ public class WorkspaceMediaContainer<T> extends SelectionMediaContainer<T> {
 	
 	public void setSelectedMedia (int index) {
 		this.setSelectedMedia(index, true);
-	}
-	
-	public void addEmptyMediaReference () {
-		MediaReference<T> newRef = this.mediaReferenceFactory.generateEmpty();
-		this.addBlankMedia(newRef);
-		
-		int newMediaIndex = this.medias.size() - 1;
-		
-		this.setSelectedMedia(newMediaIndex);	
 	}
 	
 	public void removeCurrentMediaReference () {

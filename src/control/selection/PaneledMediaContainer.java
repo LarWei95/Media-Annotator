@@ -2,6 +2,8 @@ package control.selection;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import model.MediaType;
 import model.annotation.Annotation;
 import view.media.MediaAnnotationPanel;
 
@@ -10,12 +12,12 @@ public class PaneledMediaContainer<T> extends SelectionMediaContainer<T>{
 	
 	private final MediaAnnotationPanel<T> annotator;
 
-	public PaneledMediaContainer (MediaAnnotationPanel<T> annotator) {
-		this(annotator, new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>());
+	public PaneledMediaContainer (MediaType mediaType, MediaAnnotationPanel<T> annotator) {
+		this(mediaType, annotator, new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>());
 	}
 	
-	public PaneledMediaContainer (MediaAnnotationPanel<T> annotator, List<MediaReference<T>> medias, List<Annotation> annotations) {
-		super(medias, annotations);
+	public PaneledMediaContainer (MediaType mediaType, MediaAnnotationPanel<T> annotator, List<MediaReference<T>> medias, List<Annotation> annotations) {
+		super(mediaType, medias, annotations);
 		
 		this.annotator = annotator;
 	}
@@ -53,7 +55,7 @@ public class PaneledMediaContainer<T> extends SelectionMediaContainer<T>{
 		
 		if (index != -1) {
 			this.annotator.setAnnotation(this.annotations.get(index));
-			this.annotator.setMedia(this.medias.get(index).getMedia());
+			this.annotator.setMedia(this.medias.get(index).getMediaLoaded());
 			super.setSelectedMedia(index);
 		}
 		

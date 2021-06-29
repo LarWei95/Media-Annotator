@@ -9,6 +9,7 @@ import javax.swing.JFileChooser;
 import control.selection.PaneledMediaContainer;
 import control.selection.MediaContainer;
 import control.selection.MediaReference;
+import model.MediaType;
 import model.annotation.Annotation;
 import view.media.MediaAnnotationPanel;
 
@@ -16,9 +17,9 @@ public class AnnotationWorkspace<T> {
 	private PaneledMediaContainer<T> mediaContainer;
 	private Path savePath;
 	
-	public AnnotationWorkspace (MediaAnnotationPanel<T> mediaAnnotator, List<MediaReference<T>> medias, List<Annotation> annotations,
+	public AnnotationWorkspace (MediaType mediaType, MediaAnnotationPanel<T> mediaAnnotator, List<MediaReference<T>> medias, List<Annotation> annotations,
 			Path defaultSavePath) {
-		this.mediaContainer = new PaneledMediaContainer<T>(mediaAnnotator, medias, annotations);
+		this.mediaContainer = new PaneledMediaContainer<T>(mediaType, mediaAnnotator, medias, annotations);
 		this.savePath = defaultSavePath;
 	}
 	
@@ -33,10 +34,7 @@ public class AnnotationWorkspace<T> {
 	protected void saveToPath (File file) throws IOException{
 		this.mediaContainer.updateCurrentAnnotation();
 		
-		ArrayList<MediaReference<T>> medias = this.mediaContainer.getMedias();
-		ArrayList<Annotation> annotations = this.mediaContainer.getAnnotations();
-		
-		AnnotationIO.save(medias, annotations, file, true);
+		AnnotationIO.save(this, file, true);
 		this.savePath = file.toPath();
 	}
 	

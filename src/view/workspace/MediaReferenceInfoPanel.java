@@ -73,6 +73,20 @@ class PathListener implements DocumentListener {
 			this.infoPanel.setPathByInputField();
 		}
 	}
+}
+
+class OverwriteChecksumListener implements ActionListener {
+
+	private MediaReferenceInfoPanel<?> infoPanel;
+	
+	public OverwriteChecksumListener (MediaReferenceInfoPanel<?> infoPanel) {
+		this.infoPanel = infoPanel;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		this.infoPanel.overwriteChecksum();
+	}
 	
 }
 
@@ -91,6 +105,7 @@ public class MediaReferenceInfoPanel<T> extends ChangeEmitterPanel {
 	
 	private PathOpenListener openListener;
 	private PathListener pathListener;
+	private OverwriteChecksumListener chksumListener;
 	/**
 	 * Create the panel.
 	 */
@@ -169,39 +184,18 @@ public class MediaReferenceInfoPanel<T> extends ChangeEmitterPanel {
 		add(this.savedChksumOutLabel, gbc_savedChksumOutLabel);
 		
 		this.overwriteChksumButton = new JButton("Overwrite");
+		this.chksumListener = new OverwriteChecksumListener(this);
+		overwriteChksumButton.addActionListener(this.chksumListener);
 		GridBagConstraints gbc_overwriteChksumButton = new GridBagConstraints();
 		gbc_overwriteChksumButton.gridx = 2;
 		gbc_overwriteChksumButton.gridy = 2;
 		add(this.overwriteChksumButton, gbc_overwriteChksumButton);
 	}
 	
-	protected static String bytesToHex(byte[] bytes) {
-		StringBuilder builder = new StringBuilder();
-		
-		byte current;
-		
-		for (int i = 0; i < bytes.length; i++) {
-			current = bytes[i];
-			builder.append(String.format("%02X", current));
-		}
-		
-		return builder.toString();
-	}
+	
 	
 	private void updateCurrentChecksum () throws NoSuchAlgorithmException, IOException {
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		
-		System.out.println(this.mediaReference.getPath());
-		
-		FileInputStream s = new FileInputStream(this.mediaReference.getPath().toFile());
-		md.update(s.readAllBytes());
-		
-		byte[] bytes = md.digest();
-		
-		s.close();
-		
-		String str = bytesToHex(bytes);
-		
+		String str = this.mediaReference.getMD5Checksum();	
 		this.fileChksumOutLabel.setText(str);
 	}
 	
@@ -230,6 +224,16 @@ public class MediaReferenceInfoPanel<T> extends ChangeEmitterPanel {
 		}
 		
 		this.pathListener.active = true;
+		
+		this.setSavedChecksumOutLabel(this.mediaReference.getChecksum());
+	}
+	
+	private void setSavedChecksumOutLabel (String checksum) {
+		if (checksum != null) {
+			this.savedChksumOutLabel.setText(checksum);
+		} else {
+			this.savedChksumOutLabel.setText("None set");
+		}
 	}
 	
 	public MediaReference<T> getMediaReference () {
@@ -239,8 +243,10 @@ public class MediaReferenceInfoPanel<T> extends ChangeEmitterPanel {
 	@Override
 	public void updateOnForwardedChange() {
 		String pathInput = this.filePathTextField.getText();
-		this.mediaReference.setPath(pathInput);
 		
+		if (this.mediaReference != null) {
+			this.mediaReference.setPath(pathInput);
+		}
 	}
 	
 	protected void setPathByInputField () {
@@ -266,6 +272,15 @@ public class MediaReferenceInfoPanel<T> extends ChangeEmitterPanel {
 				this.updateCurrentChecksum();
 			} catch (Exception e) {
 			}
+		}
+	}
+	
+	protected void overwriteChecksum () {
+		if (this.mediaReference != null) {
+			String chksum = this.mediaReference.getMD5Checksum();
+			this.mediaReference.setChecksum(chksum);
+			this.setSavedChecksumOutLabel(chksum);
+			this.forwardChange();
 		}
 	}
 }
