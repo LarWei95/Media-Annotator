@@ -2,6 +2,7 @@ package view.media;
 
 import control.ViewAnnotationLink;
 import control.annotation.editor.RectangleEditor;
+import control.clipboard.AnnotationClipboard;
 import model.annotation.Annotation;
 import view.ChangeEmitter;
 import view.annotation.types.MapClassAnnotationPanel;
@@ -23,7 +24,7 @@ public class ImageAnnotationPanel extends MediaAnnotationPanel<BufferedImage> {
 	/**
 	 * Create the panel.
 	 */
-	public ImageAnnotationPanel() {
+	public ImageAnnotationPanel(AnnotationClipboard annotationClipboard) {
 		this.setLayout(new BorderLayout(0, 0));
 		
 		this.rectEditor = new RectangleEditor();
@@ -33,7 +34,7 @@ public class ImageAnnotationPanel extends MediaAnnotationPanel<BufferedImage> {
 		link.setImageViewer(this.imagePanel);
 		this.add(this.imagePanel, BorderLayout.CENTER);
 			
-		this.panel = new MapClassAnnotationPanel(new ChangeEmitter() {
+		this.panel = new MapClassAnnotationPanel(annotationClipboard, new ChangeEmitter() {
 			@Override
 			public void updateOnForwardedChange() {
 				Annotation anno = panel.getAnnotation();

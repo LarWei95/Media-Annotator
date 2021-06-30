@@ -30,7 +30,6 @@ class DeleteTabListener implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		this.panel.deleteCurrentTab();
 	}
-	
 }
 
 class IdentifierListener implements DocumentListener {
@@ -54,6 +53,20 @@ class IdentifierListener implements DocumentListener {
 	public void changedUpdate(DocumentEvent e) {
 		this.panel.forwardChange();
 	}
+}
+
+class CopyListener implements ActionListener {
+	private MappableAnnotationPanel annotationPanel;
+	
+	public CopyListener (MappableAnnotationPanel annotationPanel) {
+		this.annotationPanel = annotationPanel;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
 
@@ -61,7 +74,7 @@ public class MappableHeaderPanel extends ChangeEmitterPanel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1514524989040596560L;
+	private static final long serialVersionUID = -1514524989040596560L;	
 	private JTextField nameTextField;
 	private IdentifierListener listener;
 	

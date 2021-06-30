@@ -8,6 +8,7 @@ import java.awt.Insets;
 import javax.swing.JCheckBox;
 
 import control.ViewAnnotationLink;
+import control.clipboard.AnnotationClipboard;
 import model.annotation.Annotation;
 import model.annotation.ClassAnnotation;
 
@@ -28,8 +29,8 @@ public class ClassAnnotationPanel extends AnnotationPanel {
 	/**
 	 * Create the panel.
 	 */
-	public ClassAnnotationPanel(ChangeEmitter changeEmitter, ViewAnnotationLink viewAnnotationLink) {
-		super(changeEmitter, viewAnnotationLink);
+	public ClassAnnotationPanel(AnnotationClipboard clipboard, ChangeEmitter changeEmitter, ViewAnnotationLink viewAnnotationLink) {
+		super(clipboard, changeEmitter, viewAnnotationLink);
 		this.variableInput = new VariableInput("Class name:", this);
 		this.classAnnotation = new ClassAnnotation("", false);
 		
@@ -38,14 +39,14 @@ public class ClassAnnotationPanel extends AnnotationPanel {
 		gridBagLayout.rowHeights = new int[]{0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		setLayout(gridBagLayout);
+		this.mainPanel.setLayout(gridBagLayout);
 		
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 0;
-		add(this.variableInput, gbc_lblNewLabel);
+		this.mainPanel.add(this.variableInput, gbc_lblNewLabel);
 		
 		forceQuotesCheckbox = new JCheckBox("Force quotes");
 		forceQuotesCheckbox.addItemListener(new ItemListener() {
@@ -57,7 +58,7 @@ public class ClassAnnotationPanel extends AnnotationPanel {
 		gbc_forceQuotesCheckbox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_forceQuotesCheckbox.gridx = 0;
 		gbc_forceQuotesCheckbox.gridy = 1;
-		add(forceQuotesCheckbox, gbc_forceQuotesCheckbox);
+		this.mainPanel.add(forceQuotesCheckbox, gbc_forceQuotesCheckbox);
 	}
 
 	@Override

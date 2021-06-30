@@ -21,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 
 import com.github.cliftonlabs.json_simple.JsonException;
 
+import control.clipboard.AnnotationClipboard;
 import control.framefactory.FrameFactory;
 import control.io.AnnotationIO;
 import control.io.AnnotationWorkspace;
@@ -99,15 +100,38 @@ class SaveWorkspaceListener extends AnnotationWorkspaceListener {
 	}
 }
 
+class PasteToAllListener extends AnnotationWorkspaceListener {
+	private AnnotationClipboard clipboard;
+	
+	public PasteToAllListener(AnnotationWorkspace<?> workspace, AnnotationClipboard clipboard) {
+		super(workspace);
+		this.clipboard = clipboard;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Annotation anno = this.clipboard.getAnnotation();
+		
+		if (anno != null) {
+			PaneledMediaContainer<?> mediaContainer = this.workspace.getMediaContainer();
+			
+			for (int i = 0; i < mediaContainer.getMedias().size(); i++) {
+				mediaContainer.setAnnotationAt(anno.copy(), i);
+			}
+		}
+	}
+}
+
 class ActionContainer<T> extends MainFrameContainer<T>{
-	protected JFrame frame;
+	protected MainFrame frame;
 	
 	protected SaveAsWorkspaceListener saveAsListener;
 	protected SaveWorkspaceListener saveListener;
 	
 	protected OpenWorkspaceListener<T> openWorkspaceListener;
+	protected PasteToAllListener pasteToAllListener;
 	
-	public ActionContainer(JFrame frame, WorkspaceAnnotationPanel<T> workspacePanel, MediaReferenceFactory<T> factory, 
+	public ActionContainer(MainFrame frame, WorkspaceAnnotationPanel<T> workspacePanel, MediaReferenceFactory<T> factory, 
 			MediaInfoPanel<T> infoPanel) {
 		super(workspacePanel, factory, infoPanel);
 		
@@ -116,9 +140,10 @@ class ActionContainer<T> extends MainFrameContainer<T>{
 		this.saveAsListener = new SaveAsWorkspaceListener(workspacePanel.getAnnotationWorkspace());
 		this.saveListener = new SaveWorkspaceListener(workspacePanel.getAnnotationWorkspace());
 		this.openWorkspaceListener = new OpenWorkspaceListener<T>(this, factory, infoPanel);
+		this.pasteToAllListener = new PasteToAllListener(workspacePanel.getAnnotationWorkspace(), frame.clipboard);
 	}
 	
-	public ActionContainer (JFrame frame, MainFrameContainer<T> mainFrameContainer) {
+	public ActionContainer (MainFrame frame, MainFrameContainer<T> mainFrameContainer) {
 		super(mainFrameContainer.workspacePanel, mainFrameContainer.factory, mainFrameContainer.infoPanel);
 		
 		this.frame = frame;
@@ -142,6 +167,7 @@ public class MainFrame extends JFrame {
 	 */
 	private static final long serialVersionUID = 2594191483753611719L;
 	private ActionContainer<?> actionContainer;
+	protected AnnotationClipboard clipboard;
 	
 	private JPanel contentPane;
 	
@@ -155,8 +181,14 @@ public class MainFrame extends JFrame {
 	private JMenuItem fileQuitItem;
 	private JMenu editMenu;
 	private JMenuItem editWorkspaceMenuItem;
+	private JMenuItem pasteToAllMenuItem;
 	
-	public MainFrame() {
+	/**
+	 * @wbp.parser.constructor
+	 */
+	public MainFrame(AnnotationClipboard clipboard) {
+		this.clipboard = clipboard;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -170,8 +202,8 @@ public class MainFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public <T> MainFrame(MainFrameContainer<T> mainFrameContainer) {
-		this();
+	public <T> MainFrame(AnnotationClipboard clipboard, MainFrameContainer<T> mainFrameContainer) {
+		this(clipboard);
 		this.actionContainer = new ActionContainer<T>(this, mainFrameContainer);
 		this.setCurrentElements();
 	}
@@ -189,6 +221,8 @@ public class MainFrame extends JFrame {
 			this.fileSaveAsItem.addActionListener(this.actionContainer.saveAsListener);
 			this.fileSaveItem.addActionListener(this.actionContainer.saveListener);
 			this.editWorkspaceMenuItem.addActionListener(this.actionContainer.openWorkspaceListener);
+			
+			this.pasteToAllMenuItem.addActionListener(this.actionContainer.pasteToAllListener);
 		}
 	}
 	
@@ -238,6 +272,9 @@ public class MainFrame extends JFrame {
 		
 		editWorkspaceMenuItem = new JMenuItem("Workspace ...");
 		editMenu.add(editWorkspaceMenuItem);
+		
+		pasteToAllMenuItem = new JMenuItem("Paste to all");
+		editMenu.add(pasteToAllMenuItem);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -253,7 +290,7 @@ public class MainFrame extends JFrame {
 				
 				switch (mediaType) {
 				case IMAGE:
-					MainFrameContainer<BufferedImage> newContainer = FrameFactory.getBufferedImageMainFrameContainer((MediaContainer<BufferedImage>) mediaContainer, file.toPath());
+					MainFrameContainer<BufferedImage> newContainer = FrameFactory.getBufferedImageMainFrameContainer(this.clipboard, (MediaContainer<BufferedImage>) mediaContainer, file.toPath());
 					this.setMainFrameContainer(newContainer);
 					break;
 				}

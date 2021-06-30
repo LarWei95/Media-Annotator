@@ -34,6 +34,11 @@ public class BoxAnnotation extends Annotation {
 		this.annotation = annotation;
 	}
 	
+	@Override
+	public Annotation copy() {
+		return new BoxAnnotation(this.startX, this.startY, this.endX, this.endY, (MapClassAnnotation)this.annotation.copy());
+	}	
+	
 	public MapClassAnnotation getMapClassAnnotation () {
 		return this.annotation;
 	}
@@ -112,5 +117,7 @@ public class BoxAnnotation extends Annotation {
 		} else {
 			return false;
 		}
-	}	
+	}
+
+	
 }
