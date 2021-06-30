@@ -1,10 +1,9 @@
-package view;
+package view.viewer.image;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import control.RectangleEditor;
 import control.ViewAnnotationLink;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -13,36 +12,49 @@ import java.awt.event.ComponentEvent;
 
 class ImageViewerMouseMotion extends MouseMotionAdapter {
 	private final ImageViewer imageViewer;
+	protected boolean active;
 	
 	public ImageViewerMouseMotion (ImageViewer imageViewer) {
 		this.imageViewer = imageViewer;
+		this.active = true;
 	}
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// Update bei jeder gedrueckten Bewegung
-		this.imageViewer.link.rectEditor.updateEnd(e.getX(), e.getY(), this.imageViewer.getScale());
-		this.imageViewer.repaint();
+		if (this.active) {
+			// Update bei jeder gedrueckten Bewegung
+			this.imageViewer.link.rectEditor.updateEnd(e.getX(), e.getY(), this.imageViewer.getScale());
+			this.imageViewer.setCurrentRectangleToPanel();
+			this.imageViewer.repaint();
+		}
 	}
 }
 
 class ImageViewerMouse extends MouseAdapter {
 	private final ImageViewer imageViewer;
+	protected boolean active;
 	
 	public ImageViewerMouse (ImageViewer imageViewer) {
 		this.imageViewer = imageViewer;
+		this.active = true;
 	}
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
-		this.imageViewer.link.rectEditor.updateStart(e.getX(), e.getY(), this.imageViewer.getScale());
-		this.imageViewer.repaint();
+		if (this.active) {
+			this.imageViewer.link.rectEditor.updateStart(e.getX(), e.getY(), this.imageViewer.getScale());
+			this.imageViewer.link.rectEditor.updateEnd(e.getX(), e.getY(), this.imageViewer.getScale());
+			this.imageViewer.setCurrentRectangleToPanel();
+			this.imageViewer.repaint();
+		}
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		this.imageViewer.link.rectEditor.updateEnd(e.getX(), e.getY(), this.imageViewer.getScale());
-		this.imageViewer.setCurrentRectangleToPanel();
-		this.imageViewer.repaint();
+		if (this.active) {
+			this.imageViewer.link.rectEditor.updateEnd(e.getX(), e.getY(), this.imageViewer.getScale());
+			this.imageViewer.setCurrentRectangleToPanel();
+			this.imageViewer.repaint();
+		}
 	}
 }
 
@@ -80,6 +92,11 @@ public class ImageViewer extends BasicImageViewer {
 		this.mouse = new ImageViewerMouse(this);
 		this.addMouseMotionListener(this.mouseMotion);
 		this.addMouseListener(this.mouse);
+	}
+	
+	public void setActive (boolean active) {
+		this.mouseMotion.active = active;
+		this.mouse.active = active;
 	}
 	
 	@Override

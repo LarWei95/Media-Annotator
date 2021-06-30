@@ -1,19 +1,21 @@
-package view.annotation.media;
+package view.media;
 
-import javax.swing.JPanel;
-import control.RectangleEditor;
 import control.ViewAnnotationLink;
-import model.Annotation;
+import control.annotation.editor.RectangleEditor;
+import model.annotation.Annotation;
 import view.ChangeEmitter;
-import view.ImageViewer;
 import view.annotation.types.MapClassAnnotationPanel;
 import view.annotation.types.MappableAnnotationPanel;
-
+import view.viewer.image.ImageViewer;
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 
-public class ImageAnnotationPanel extends JPanel implements IMediaAnnotator<BufferedImage>{
+public class ImageAnnotationPanel extends MediaAnnotationPanel<BufferedImage> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8608652095399255409L;
 	private MapClassAnnotationPanel panel;
 	private RectangleEditor rectEditor;
 	private ImageViewer imagePanel;
@@ -34,7 +36,8 @@ public class ImageAnnotationPanel extends JPanel implements IMediaAnnotator<Buff
 		this.panel = new MapClassAnnotationPanel(new ChangeEmitter() {
 			@Override
 			public void updateOnForwardedChange() {
-				
+				Annotation anno = panel.getAnnotation();
+				link.updateViewedAnnotations(anno);
 			}
 
 			@Override
@@ -66,7 +69,7 @@ public class ImageAnnotationPanel extends JPanel implements IMediaAnnotator<Buff
 
 	@Override
 	public void setMedia(BufferedImage media) {
-		this.imagePanel.setImage(media);
+		this.imagePanel.setMedia(media);
 	}
 
 	@Override

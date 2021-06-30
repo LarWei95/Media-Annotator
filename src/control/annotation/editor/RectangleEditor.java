@@ -1,4 +1,4 @@
-package control;
+package control.annotation.editor;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 public class RectangleEditor {

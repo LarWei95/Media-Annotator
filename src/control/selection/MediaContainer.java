@@ -4,22 +4,43 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Annotation;
-import view.annotation.media.IMediaAnnotator;
+import model.MediaType;
+import model.annotation.Annotation;
 
 public class MediaContainer<T> {
-	private ArrayList<MediaReference<T>> medias;
-	private ArrayList<Annotation> annotations;
+	protected final MediaType mediaType;
+	protected final ArrayList<MediaReference<T>> medias;
+	protected final ArrayList<Annotation> annotations;
 	
-	private final IMediaAnnotator<T> annotator;
-	private int mediaIndex;
-
-	public MediaContainer (IMediaAnnotator<T> annotator) {
-		this.medias = new ArrayList<MediaReference<T>> ();
-		this.annotations = new ArrayList<Annotation>();
-		
-		this.annotator = annotator;
-		this.mediaIndex = -1;
+	public MediaContainer (MediaType mediaType) {
+		this(mediaType, new ArrayList<MediaReference<T>> (), new ArrayList<Annotation>());
+	}
+	
+	public MediaContainer (MediaType mediaType, List<MediaReference<T>> medias, List<Annotation> annotations) {
+		this.mediaType = mediaType;
+		this.medias = new ArrayList<MediaReference<T>>(medias);
+		this.annotations = new ArrayList<Annotation>(annotations);
+	}
+	
+	public MediaContainer (MediaContainer<T> mediaContainer) {
+		this(mediaContainer.mediaType, mediaContainer.medias, mediaContainer.annotations);
+	}
+	
+	public final MediaType getMediaType () {
+		return this.mediaType;
+	}
+	
+	public void setContainer (ArrayList<MediaReference<T>> medias, ArrayList<Annotation> annotations) {
+		if (medias.size() == annotations.size()) {
+			this.medias.clear();
+			this.annotations.clear();
+			
+			this.medias.addAll(medias);
+			this.annotations.addAll(annotations);
+		} else {
+			String errMsg = "The given media container contents are not of the same size.\n"+medias.size()+"\n"+annotations.size();
+			throw new IllegalArgumentException(errMsg);
+		}
 	}
 	
 	public final void loadAll () throws IOException{
@@ -32,6 +53,16 @@ public class MediaContainer<T> {
 		for (MediaReference<T> ref: this.medias) {
 			ref.unload();
 		}
+	}
+	
+	public final boolean[] getValidities () {
+		boolean[] valids = new boolean[this.medias.size()];
+		
+		for (int i = 0; i < valids.length; i++) {
+			valids[i] = this.medias.get(i).isValid();
+		}
+		
+		return valids;
 	}
 	
 	public ArrayList<MediaReference<T>> getMedias () {
@@ -61,20 +92,5 @@ public class MediaContainer<T> {
 		for (MediaReference<T> ref: medias) {
 			this.addBlankMedia(ref);
 		}
-	}
-	
-	public void setSelectedMedia (int index) {
-		if (this.mediaIndex != -1) {
-			this.annotations.set(this.mediaIndex, this.annotator.getAnnotation());
-		}
-		
-		this.annotator.clear();
-		
-		if (this.mediaIndex != -1) {
-			this.annotator.setAnnotation(this.annotations.get(index));
-		}
-		
-		this.annotator.setMedia(this.medias.get(index).getMedia());
-		this.mediaIndex = index;
 	}
 }

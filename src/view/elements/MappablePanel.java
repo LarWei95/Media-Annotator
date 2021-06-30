@@ -2,19 +2,20 @@ package view.elements;
 
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JSeparator;
-
-import model.Annotation;
+import model.annotation.Annotation;
 import view.ChangeEmitterPanel;
 import view.annotation.types.AnnotationPanel;
 import view.annotation.types.MappableAnnotationPanel;
-
 import java.awt.BorderLayout;
 
 public class MappablePanel extends ChangeEmitterPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7770754382605735112L;
 	protected MappableHeaderPanel header;
 	protected AnnotationPanel annotationPanel;
 	

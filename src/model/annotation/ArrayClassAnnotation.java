@@ -1,12 +1,9 @@
-package model;
+package model.annotation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.Jsonable;
-
-import view.elements.MappablePanel;
 
 public class ArrayClassAnnotation extends BaseClassAnnotation {
 	

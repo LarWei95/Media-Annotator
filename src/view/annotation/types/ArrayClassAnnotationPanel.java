@@ -1,19 +1,21 @@
 package view.annotation.types;
 
 import java.util.ArrayList;
-
-import javax.swing.JPanel;
-
 import control.ViewAnnotationLink;
-import model.Annotation;
-import model.ArrayClassAnnotation;
-import model.BoxAnnotation;
-import model.ClassAnnotation;
-import model.MapClassAnnotation;
+import model.annotation.Annotation;
+import model.annotation.ArrayClassAnnotation;
+import model.annotation.BoxAnnotation;
+import model.annotation.ClassAnnotation;
+import model.annotation.MapClassAnnotation;
 import view.ChangeEmitter;
 import view.elements.MappablePanel;
 
 public class ArrayClassAnnotationPanel extends MappableAnnotationPanel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1402258399208277852L;
 
 	public ArrayClassAnnotationPanel(ChangeEmitter emitter, ViewAnnotationLink viewAnnotationLink, String[] options) {
 		super(emitter, viewAnnotationLink, options);

@@ -1,11 +1,12 @@
-package model;
+package model.annotation;
 
-import com.github.cliftonlabs.json_simple.JsonKey;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import com.github.cliftonlabs.json_simple.Jsoner;
 
 public class ClassAnnotation extends BaseClassAnnotation {
+	public static final String KEY_CLASS = "class";
+	
 	private Object classAnnotation;
 	private boolean inBrackets;
 	
@@ -16,7 +17,7 @@ public class ClassAnnotation extends BaseClassAnnotation {
 	
 	@Override
 	public String getKeyString() {
-		return "class";
+		return KEY_CLASS;
 	}
 
 	@Override
@@ -46,5 +47,9 @@ public class ClassAnnotation extends BaseClassAnnotation {
 	
 	public Object getClassAnnotation () {
 		return this.classAnnotation;
+	}
+	
+	public static boolean hasRequirements (JsonObject jsonObject) {
+		return jsonObject.containsKey(KEY_CLASS);
 	}
 }

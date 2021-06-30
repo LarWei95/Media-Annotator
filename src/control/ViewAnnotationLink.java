@@ -1,23 +1,25 @@
 package control;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
-
-import model.Annotation;
-import model.BoxAnnotation;
-import model.MapClassAnnotation;
-import view.ImageViewer;
+import control.annotation.collector.VisualAnnotationCollector;
+import control.annotation.editor.RectangleEditor;
+import model.annotation.Annotation;
+import model.annotation.BoxAnnotation;
+import model.annotation.MapClassAnnotation;
 import view.annotation.types.ActivePanelContainer;
 import view.annotation.types.AnnotationPanel;
 import view.annotation.types.BoxAnnotationPanel;
-import view.annotation.types.ClassAnnotationPanel;
+import view.viewer.MediaViewer;
+import view.viewer.image.ImageViewer;
 
 public class ViewAnnotationLink {
 	private ActivePanelContainer activePanelContainer;
 	private AnnotationPanel root;
 	
 	public final RectangleEditor rectEditor;
-	public ImageViewer imageViewer;
+	public MediaViewer<BufferedImage> imageViewer;
 	
 	public ViewAnnotationLink (RectangleEditor rectEditor) {
 		this.activePanelContainer = new ActivePanelContainer();
@@ -41,6 +43,7 @@ public class ViewAnnotationLink {
 		}
 	}
 	
+	/*
 	public void updateFromPanels () {
 		BoxAnnotationPanel boxPanel = this.activePanelContainer.getBoxAnnotationPanel();
 		ClassAnnotationPanel classPanel = this.activePanelContainer.getClassAnnotationPanel();
@@ -55,6 +58,7 @@ public class ViewAnnotationLink {
 			
 		}
 	}
+	*/
 	
 	public void updateViewedAnnotations (Annotation annotation) {
 		VisualAnnotationCollector collector = new VisualAnnotationCollector(annotation);
@@ -66,7 +70,7 @@ public class ViewAnnotationLink {
 			this.rectEditor.addRectangle(box.getStartX(), box.getStartY(), box.getEndX(), box.getEndY());
 		}
 		
-		this.imageViewer.repaint();
+		this.imageViewer.updateView();
 	}
 	
 	public void setCurrentBox () {

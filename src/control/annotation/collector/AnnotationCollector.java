@@ -1,6 +1,6 @@
-package control;
+package control.annotation.collector;
 
-import model.Annotation;
+import model.annotation.Annotation;
 
 public abstract class AnnotationCollector {
 	public AnnotationCollector (Annotation rootAnnotation) {

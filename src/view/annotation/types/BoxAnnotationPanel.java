@@ -1,25 +1,16 @@
 package view.annotation.types;
 
-import javax.swing.JPanel;
-
-import model.Annotation;
-import model.BaseClassAnnotation;
-import model.BoxAnnotation;
-import model.MapClassAnnotation;
 import view.ChangeEmitter;
-
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.text.NumberFormat;
-
-import javax.swing.JTextField;
 import javax.swing.JFormattedTextField;
-import javax.swing.JToggleButton;
-
 import control.ViewAnnotationLink;
-
+import model.annotation.Annotation;
+import model.annotation.BoxAnnotation;
+import model.annotation.MapClassAnnotation;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
@@ -43,6 +34,10 @@ class CoordinateChangeListener implements PropertyChangeListener {
 
 public class BoxAnnotationPanel extends AnnotationPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -369267743186640621L;
 	private MapClassAnnotationPanel annotationPanel;
 	private JFormattedTextField xminField;
 	private JFormattedTextField yminField;
