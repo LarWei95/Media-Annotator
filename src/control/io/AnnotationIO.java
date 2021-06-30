@@ -33,7 +33,7 @@ public class AnnotationIO {
 	public static final String KEY_ANNOTATIONS = "annotations";
 	
 	public static final String KEY_METADATA_MEDIATYPE = "mediatype";
-	
+	public static final String KEY_METADATA_ORDER = "order";
 	public static final String KEY_METADATA_MD5 = "md5";	
 	
 	public static <T> void save (AnnotationWorkspace<T> workspace, File outPath, boolean useAbsolutePaths) throws IOException {
@@ -65,12 +65,20 @@ public class AnnotationIO {
 		metadata.put(AnnotationIO.KEY_METADATA_MEDIATYPE, mediaType.getLabel());
 		
 		JsonObject md5s = new JsonObject();
+		JsonArray order = new JsonArray();
+		
+		String absPath;
 		
 		for (MediaReference<T> media: medias) {
-			md5s.put(media.getPath().toAbsolutePath().toString(), media.getChecksum());
+			absPath = media.getPath().toAbsolutePath().toString();
+			
+			md5s.put(absPath, media.getChecksum());
+			order.add(absPath);
 		}
 		
 		metadata.put(AnnotationIO.KEY_METADATA_MD5, md5s);
+		metadata.put(AnnotationIO.KEY_METADATA_ORDER, order);
+		
 		return metadata;
 	}
 	
@@ -194,6 +202,17 @@ public class AnnotationIO {
 		return hashes;
 	}
 	
+	public static ArrayList<Path> getOrder (JsonObject metadata) {
+		JsonArray order = (JsonArray) metadata.get(AnnotationIO.KEY_METADATA_ORDER);
+		ArrayList<Path> paths = new ArrayList<Path>(order.size());
+		
+		for (Object obj: order) {
+			paths.add(Path.of((String) obj));
+		}
+		
+		return paths;
+	}
+	
 	public static MediaContainer<?> load (File inPath) throws IOException, JsonException {
 		BufferedReader reader = new BufferedReader(new FileReader(inPath));
 		
@@ -204,10 +223,11 @@ public class AnnotationIO {
 		
 		HashMap<Path, String> hashes = AnnotationIO.getHashes(metadata);
 		HashMap<Path, Annotation> annotations = parseAnnotationDict(annotationDict);
+		ArrayList<Path> order = getOrder(metadata);
 		
 		switch (mediaType) {
 		case MediaType.IMAGE_STRING:
-			return MediaReferenceFactory.getImageInstance().ofCollections(hashes, annotations);
+			return MediaReferenceFactory.getImageInstance().ofCollections(hashes, annotations, order);
 			default:
 				String errMsg = "The media type could not be used: "+mediaType;
 				throw new IllegalArgumentException(errMsg);

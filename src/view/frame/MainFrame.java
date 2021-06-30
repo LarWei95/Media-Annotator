@@ -4,10 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -15,12 +18,18 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
+
+import com.github.cliftonlabs.json_simple.JsonException;
+
+import control.framefactory.FrameFactory;
+import control.io.AnnotationIO;
 import control.io.AnnotationWorkspace;
 import control.selection.ImageReference;
 import control.selection.MediaContainer;
 import control.selection.MediaReference;
 import control.selection.MediaReferenceFactory;
 import control.selection.PaneledMediaContainer;
+import model.MediaType;
 import model.annotation.Annotation;
 import view.media.info.ImageInfoPanel;
 import view.media.info.MediaInfoPanel;
@@ -28,26 +37,26 @@ import view.workspace.WorkspaceAnnotationPanel;
 
 class OpenWorkspaceListener<T> implements ActionListener {
 
-	private MainFrame<T> frame;
+	private ActionContainer<T> actionContainer;
 	private MediaReferenceFactory<T> factory;
 	private MediaInfoPanel<T> infoPanel;
 	
-	public OpenWorkspaceListener (MainFrame<T> frame, MediaReferenceFactory<T> factory, MediaInfoPanel<T> infoPanel) {
-		this.frame = frame;
+	public OpenWorkspaceListener (ActionContainer<T> actionContainer, MediaReferenceFactory<T> factory, MediaInfoPanel<T> infoPanel) {
+		this.actionContainer = actionContainer;
 		this.factory = factory;
 		this.infoPanel = infoPanel;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		this.frame.updateCurrentAnnotation();
-		MediaContainer<T> mediaContainer = new MediaContainer<T>(this.frame.getMediaContainer());
+		this.actionContainer.updateCurrentAnnotation();
+		MediaContainer<T> mediaContainer = new MediaContainer<T>(this.actionContainer.getMediaContainer());
 		
-		WorkspaceDialog<T> dialog = new WorkspaceDialog<T>(this.frame, mediaContainer, this.factory, this.infoPanel);
+		WorkspaceDialog<T> dialog = new WorkspaceDialog<T>(this.actionContainer.frame, mediaContainer, this.factory, this.infoPanel);
 		dialog.setVisible(true);
 		
 		MediaContainer<T> newMediaContainer = dialog.getWorkspaceMediaContainer();
-		this.frame.setMediaContainer(newMediaContainer);
+		this.actionContainer.setMediaContainer(newMediaContainer);
 	}
 }
 
@@ -90,13 +99,49 @@ class SaveWorkspaceListener extends AnnotationWorkspaceListener {
 	}
 }
 
-public class MainFrame<T> extends JFrame {
+class ActionContainer<T> extends MainFrameContainer<T>{
+	protected JFrame frame;
+	
+	protected SaveAsWorkspaceListener saveAsListener;
+	protected SaveWorkspaceListener saveListener;
+	
+	protected OpenWorkspaceListener<T> openWorkspaceListener;
+	
+	public ActionContainer(JFrame frame, WorkspaceAnnotationPanel<T> workspacePanel, MediaReferenceFactory<T> factory, 
+			MediaInfoPanel<T> infoPanel) {
+		super(workspacePanel, factory, infoPanel);
+		
+		this.frame = frame;
+		
+		this.saveAsListener = new SaveAsWorkspaceListener(workspacePanel.getAnnotationWorkspace());
+		this.saveListener = new SaveWorkspaceListener(workspacePanel.getAnnotationWorkspace());
+		this.openWorkspaceListener = new OpenWorkspaceListener<T>(this, factory, infoPanel);
+	}
+	
+	public ActionContainer (JFrame frame, MainFrameContainer<T> mainFrameContainer) {
+		super(mainFrameContainer.workspacePanel, mainFrameContainer.factory, mainFrameContainer.infoPanel);
+		
+		this.frame = frame;
+		
+		this.saveAsListener = new SaveAsWorkspaceListener(workspacePanel.getAnnotationWorkspace());
+		this.saveListener = new SaveWorkspaceListener(workspacePanel.getAnnotationWorkspace());
+		this.openWorkspaceListener = new OpenWorkspaceListener<T>(this, factory, infoPanel);
+	}
+	
+	protected void setMediaContainer (MediaContainer<T> container) {
+		super.setMediaContainer(container);
+		
+		frame.validate();
+	}
+}
+
+public class MainFrame extends JFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2594191483753611719L;
-	private WorkspaceAnnotationPanel<T> workspacePanel;
+	private ActionContainer<?> actionContainer;
 	
 	private JPanel contentPane;
 	
@@ -111,15 +156,7 @@ public class MainFrame<T> extends JFrame {
 	private JMenu editMenu;
 	private JMenuItem editWorkspaceMenuItem;
 	
-	private SaveAsWorkspaceListener saveAsListener;
-	private SaveWorkspaceListener saveListener;
-	
-	/**
-	 * Create the frame.
-	 */
-	public MainFrame(WorkspaceAnnotationPanel<T> workspacePanel, MediaReferenceFactory<T> factory, 
-			MediaInfoPanel<T> infoPanel) {
-		this.workspacePanel = workspacePanel;
+	public MainFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -127,12 +164,50 @@ public class MainFrame<T> extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-		this.contentPane.add(workspacePanel);
-		
+		this.initializeMenu();
+	}
+	
+	/**
+	 * Create the frame.
+	 */
+	public <T> MainFrame(MainFrameContainer<T> mainFrameContainer) {
+		this();
+		this.actionContainer = new ActionContainer<T>(this, mainFrameContainer);
+		this.setCurrentElements();
+	}
+	
+	public <T> void setMainFrameContainer (MainFrameContainer<T> mainFrameContainer) {
+		this.removeCurrentElements();
+		this.actionContainer = new ActionContainer<T>(this, mainFrameContainer);
+		this.setCurrentElements();
+	}
+	
+	protected void setCurrentElements () {
+		if (this.actionContainer != null) {
+			this.contentPane.add(this.actionContainer.workspacePanel);
+			
+			this.fileSaveAsItem.addActionListener(this.actionContainer.saveAsListener);
+			this.fileSaveItem.addActionListener(this.actionContainer.saveListener);
+			this.editWorkspaceMenuItem.addActionListener(this.actionContainer.openWorkspaceListener);
+		}
+	}
+	
+	protected void removeCurrentElements () {
+		if (this.actionContainer != null) {
+			this.contentPane.remove(this.actionContainer.workspacePanel);
+			
+			this.fileSaveAsItem.removeActionListener(this.actionContainer.saveAsListener);
+			this.fileSaveItem.removeActionListener(this.actionContainer.saveListener);
+			this.editWorkspaceMenuItem.removeActionListener(this.actionContainer.openWorkspaceListener);
+		}
+	}
+	
+	private void initializeMenu () {
 		menuBar = new JMenuBar();
 		this.setJMenuBar(menuBar);
 		
 		fileMenu = new JMenu("File");
+		
 		menuBar.add(fileMenu);
 		
 		fileNewItem = new JMenuItem("New");
@@ -141,17 +216,14 @@ public class MainFrame<T> extends JFrame {
 		fileOpenItem = new JMenuItem("Open");
 		fileOpenItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				loadNewMainFrameContainer();
 			}
 		});
 		fileMenu.add(fileOpenItem);
 		
 		fileSaveAsItem = new JMenuItem("Save as ...");
-		this.saveAsListener = new SaveAsWorkspaceListener(workspacePanel.getAnnotationWorkspace());
-		fileSaveAsItem.addActionListener(this.saveAsListener);
-		
 		fileSaveItem = new JMenuItem("Save");
-		this.saveListener = new SaveWorkspaceListener(workspacePanel.getAnnotationWorkspace());
-		fileSaveItem.addActionListener(this.saveListener);
+		
 		fileMenu.add(fileSaveItem);
 		fileMenu.add(fileSaveAsItem);
 		
@@ -161,37 +233,35 @@ public class MainFrame<T> extends JFrame {
 		fileQuitItem = new JMenuItem("Quit");
 		fileMenu.add(fileQuitItem);
 		
-		editMenu = new JMenu("New menu");
+		editMenu = new JMenu("Edit");
 		menuBar.add(editMenu);
 		
 		editWorkspaceMenuItem = new JMenuItem("Workspace ...");
-		editWorkspaceMenuItem.addActionListener(new OpenWorkspaceListener<T>(this, factory, infoPanel));
 		editMenu.add(editWorkspaceMenuItem);
 	}
 	
-	protected PaneledMediaContainer<T> getMediaContainer () {
-		return this.workspacePanel.getMediaContainer();
-	}
-	
-	protected void setMediaContainer (MediaContainer<T> container) {
-		MediaContainer<T> old = this.workspacePanel.getMediaContainer();
+	@SuppressWarnings("unchecked")
+	protected void loadNewMainFrameContainer () {
+		JFileChooser chooser = new JFileChooser();
+		int ret = chooser.showOpenDialog(this);
 		
-		for (int i = 0; i < old.getMedias().size(); i++) {
-			System.out.println("Old: "+old.getMedias().get(i)+" "+old.getAnnotations().get(i));
-		}		
-		
-		this.workspacePanel.setMediaContainer(container);
-		
-		old = this.workspacePanel.getMediaContainer();
-		
-		for (int i = 0; i < old.getMedias().size(); i++) {
-			System.out.println("New: "+old.getMedias().get(i)+" "+old.getAnnotations().get(i));
+		if (ret == JFileChooser.APPROVE_OPTION) {
+			File file = chooser.getSelectedFile();
+			try {
+				MediaContainer<?> mediaContainer = AnnotationIO.load(file);
+				MediaType mediaType = mediaContainer.getMediaType();
+				
+				switch (mediaType) {
+				case IMAGE:
+					MainFrameContainer<BufferedImage> newContainer = FrameFactory.getBufferedImageMainFrameContainer((MediaContainer<BufferedImage>) mediaContainer, file.toPath());
+					this.setMainFrameContainer(newContainer);
+					break;
+				}
+				this.validate();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
-		this.validate();
-	}
-	
-	protected void updateCurrentAnnotation () {
-		this.workspacePanel.getAnnotationWorkspace().updateCurrentAnnotation();
 	}
 }

@@ -17,7 +17,7 @@ public abstract class MediaReferenceFactory<T> {
 	
 	public abstract MediaType getMediaType ();
 	
-	public MediaContainer<T> ofCollections (Map<Path, String> hashes, Map<Path, Annotation> annotations) {
+	public MediaContainer<T> ofCollections (Map<Path, String> hashes, Map<Path, Annotation> annotations, List<Path> order) {
 		MediaType mediaType = this.getMediaType();
 		
 		ArrayList<MediaReference<T>> finalMedias = new ArrayList<MediaReference<T>>(annotations.size());
@@ -26,7 +26,7 @@ public abstract class MediaReferenceFactory<T> {
 		Annotation currentAnnotation;
 		String currentHash;
 		
-		for (Path annotationPath: annotations.keySet()) {
+		for (Path annotationPath:order) {
 			currentAnnotation = annotations.get(annotationPath);
 			currentHash = hashes.getOrDefault(annotationPath, null);
 			

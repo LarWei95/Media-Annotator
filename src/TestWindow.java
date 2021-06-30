@@ -17,7 +17,7 @@ import view.workspace.WorkspaceAnnotationPanel;
 
 public class TestWindow {
 
-	private MainFrame<BufferedImage> frame;
+	private MainFrame frame;
 
 	/**
 	 * Launch the application.

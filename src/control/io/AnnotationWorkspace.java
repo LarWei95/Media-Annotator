@@ -45,6 +45,7 @@ public class AnnotationWorkspace<T> {
 		if (ret == JFileChooser.APPROVE_OPTION) {
 			File file = chooser.getSelectedFile();
 			this.saveToPath(file);
+			this.savePath = file.toPath();
 		}
 	}
 	
