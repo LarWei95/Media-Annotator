@@ -18,6 +18,7 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsonable;
 import com.github.cliftonlabs.json_simple.Jsoner;
 
+import control.clipboard.AnnotationClipboard;
 import control.selection.MediaContainer;
 import control.selection.MediaReference;
 import control.selection.MediaReferenceFactory;
@@ -35,6 +36,7 @@ public class AnnotationIO {
 	public static final String KEY_METADATA_MEDIATYPE = "mediatype";
 	public static final String KEY_METADATA_ORDER = "order";
 	public static final String KEY_METADATA_MD5 = "md5";	
+	public static final String KEY_METADATA_CLIPBOARD = "clipboard";
 	
 	public static <T> void save (AnnotationWorkspace<T> workspace, File outPath, boolean useAbsolutePaths) throws IOException {
 		// List<MediaReference<T>> medias, List<Annotation> annotations, MediaType mediaType
@@ -232,5 +234,41 @@ public class AnnotationIO {
 				String errMsg = "The media type could not be used: "+mediaType;
 				throw new IllegalArgumentException(errMsg);
 		}
+	}
+	
+	public static void saveClipboard (AnnotationClipboard clipboard, File file) throws IOException {
+		JsonObject main = new JsonObject();
+		main.put(AnnotationClipboard.CURRENT_KEY, clipboard.getAnnotation().getJsonable());
+		
+		HashMap<String, Annotation> repository = clipboard.getRepository();
+		JsonObject repo = new JsonObject();
+		
+		for (String key: repository.keySet()) {
+			repo.put(key, repository.get(key).getJsonable());
+		}
+		
+		main.put(AnnotationClipboard.REPOSITORY_KEY, repo);
+		
+		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+		main.toJson(writer);
+		writer.close();
+	}
+	
+	public static AnnotationClipboard loadClipboard (File inPath) throws IOException, JsonException {
+		BufferedReader reader = new BufferedReader(new FileReader(inPath));
+		JsonObject object = (JsonObject) Jsoner.deserialize(reader);
+		
+		JsonObject current = (JsonObject) object.get(AnnotationClipboard.CURRENT_KEY);
+		Annotation currentAnnotation = AnnotationIO.tryParseJsonObject(current);
+		
+		JsonObject repo = (JsonObject) object.get(AnnotationClipboard.REPOSITORY_KEY);
+		
+		HashMap<String, Annotation> repoAnnotations = new HashMap<String, Annotation>(repo.size());
+		
+		for (String key: repo.keySet()) {
+			repoAnnotations.put(key, AnnotationIO.tryParseJsonObject((JsonObject)repo.get(key)));
+		}
+		
+		return new AnnotationClipboard(currentAnnotation, repoAnnotations);
 	}
 }

@@ -8,4 +8,6 @@ public abstract class Annotation {
 	public abstract String getValueString ();
 	
 	public abstract Jsonable getJsonable ();
+	
+	public abstract Annotation copy();
 }

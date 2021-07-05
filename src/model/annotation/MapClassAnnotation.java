@@ -15,6 +15,16 @@ public class MapClassAnnotation extends BaseClassAnnotation {
 		this.classes = new HashMap<String, Annotation>(classes);
 	}
 	
+	@Override
+	public Annotation copy() {
+		HashMap<String, Annotation> copiedClasses = new HashMap<String, Annotation>(this.classes.size());
+		
+		for (String str: this.classes.keySet()) {
+			copiedClasses.put(str, this.classes.get(str).copy());
+		}
+		
+		return new MapClassAnnotation(copiedClasses);
+	}
 	
 	@Override
 	public String getKeyString() {
@@ -73,4 +83,7 @@ public class MapClassAnnotation extends BaseClassAnnotation {
 		
 		return obj;
 	}
+
+
+	
 }

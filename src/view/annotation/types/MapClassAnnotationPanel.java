@@ -2,6 +2,7 @@ package view.annotation.types;
 
 import java.util.HashMap;
 import control.ViewAnnotationLink;
+import control.clipboard.AnnotationClipboard;
 import model.annotation.Annotation;
 import model.annotation.ArrayClassAnnotation;
 import model.annotation.BoxAnnotation;
@@ -20,8 +21,8 @@ public class MapClassAnnotationPanel extends MappableAnnotationPanel {
 	/**
 	 * Create the panel.
 	 */
-	public MapClassAnnotationPanel(ChangeEmitter emitter, ViewAnnotationLink viewAnnotationLink, String[] options) {
-		super(emitter, viewAnnotationLink, options);
+	public MapClassAnnotationPanel(AnnotationClipboard clipboard, ChangeEmitter emitter, ViewAnnotationLink viewAnnotationLink, String[] options) {
+		super(clipboard, emitter, viewAnnotationLink, options);
 	}
 
 	@Override

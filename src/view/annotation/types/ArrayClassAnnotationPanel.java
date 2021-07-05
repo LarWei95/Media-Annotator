@@ -2,6 +2,7 @@ package view.annotation.types;
 
 import java.util.ArrayList;
 import control.ViewAnnotationLink;
+import control.clipboard.AnnotationClipboard;
 import model.annotation.Annotation;
 import model.annotation.ArrayClassAnnotation;
 import model.annotation.BoxAnnotation;
@@ -17,8 +18,8 @@ public class ArrayClassAnnotationPanel extends MappableAnnotationPanel {
 	 */
 	private static final long serialVersionUID = 1402258399208277852L;
 
-	public ArrayClassAnnotationPanel(ChangeEmitter emitter, ViewAnnotationLink viewAnnotationLink, String[] options) {
-		super(emitter, viewAnnotationLink, options);
+	public ArrayClassAnnotationPanel(AnnotationClipboard annotationClipboard, ChangeEmitter emitter, ViewAnnotationLink viewAnnotationLink, String[] options) {
+		super(annotationClipboard, emitter, viewAnnotationLink, options);
 	}
 
 	@Override

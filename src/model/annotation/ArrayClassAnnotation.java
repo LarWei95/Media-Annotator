@@ -14,6 +14,17 @@ public class ArrayClassAnnotation extends BaseClassAnnotation {
 	}
 	
 	@Override
+	public Annotation copy() {
+		ArrayList<Annotation> copiedClasses = new ArrayList<Annotation>(this.classes.size());
+		
+		for (Annotation annotation: this.classes) {
+			copiedClasses.add(annotation);
+		}
+		
+		return new ArrayClassAnnotation(copiedClasses);
+	}
+	
+	@Override
 	public String getKeyString() {
 		return "arrayclass";
 	}
@@ -55,4 +66,6 @@ public class ArrayClassAnnotation extends BaseClassAnnotation {
 		return array;
 		
 	}
+
+	
 }

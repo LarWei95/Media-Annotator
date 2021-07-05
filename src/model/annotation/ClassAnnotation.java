@@ -16,6 +16,11 @@ public class ClassAnnotation extends BaseClassAnnotation {
 	}
 	
 	@Override
+	public Annotation copy() {
+		return new ClassAnnotation(this.classAnnotation, this.inBrackets);
+	}
+	
+	@Override
 	public String getKeyString() {
 		return KEY_CLASS;
 	}
@@ -52,4 +57,6 @@ public class ClassAnnotation extends BaseClassAnnotation {
 	public static boolean hasRequirements (JsonObject jsonObject) {
 		return jsonObject.containsKey(KEY_CLASS);
 	}
+
+	
 }

@@ -7,6 +7,8 @@ import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.swing.JTabbedPane;
 import control.ViewAnnotationLink;
+import control.clipboard.AnnotationClipboard;
+
 import java.awt.Insets;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -80,8 +82,8 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 	/**
 	 * Create the panel.
 	 */
-	protected MappableAnnotationPanel(ChangeEmitter emitter, ViewAnnotationLink viewAnnotationLink, String[] options) {
-		super(emitter, viewAnnotationLink);
+	protected MappableAnnotationPanel(AnnotationClipboard clipboard, ChangeEmitter emitter, ViewAnnotationLink viewAnnotationLink, String[] options) {
+		super(clipboard, emitter, viewAnnotationLink);
 		this.options = options;
 		this.mappablePanels = new ArrayList<MappablePanel>();
 		this.annotationPanels = new ArrayList<AnnotationPanel>();
@@ -91,7 +93,7 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
-		setLayout(gridBagLayout);
+		this.mainPanel.setLayout(gridBagLayout);
 		
 		annotationTypeBox = new JComboBox<String>();
 		annotationTypeBox.setModel(new DefaultComboBoxModel<String>(this.options));
@@ -100,7 +102,7 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 		gbc_annotationTypeBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_annotationTypeBox.gridx = 0;
 		gbc_annotationTypeBox.gridy = 0;
-		add(annotationTypeBox, gbc_annotationTypeBox);
+		this.mainPanel.add(annotationTypeBox, gbc_annotationTypeBox);
 		
 		JButton addAnnotationButton = new JButton("Add annotation");
 		addAnnotationButton.addActionListener(new AnnotationAddAction(this));
@@ -109,7 +111,7 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 		gbc_addAnnotationButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_addAnnotationButton.gridx = 0;
 		gbc_addAnnotationButton.gridy = 1;
-		add(addAnnotationButton, gbc_addAnnotationButton);
+		this.mainPanel.add(addAnnotationButton, gbc_addAnnotationButton);
 		
 		annotationTabs = new JTabbedPane(JTabbedPane.RIGHT);
 		this.tabSelectListener = new TabSelectListener(this);
@@ -118,7 +120,7 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 		gbc_annotationTabs.fill = GridBagConstraints.BOTH;
 		gbc_annotationTabs.gridx = 0;
 		gbc_annotationTabs.gridy = 2;
-		add(annotationTabs, gbc_annotationTabs);
+		this.mainPanel.add(annotationTabs, gbc_annotationTabs);
 		
 		// JPanel panel = new JPanel();
 		// annotationTabs.addTab("New tab", null, panel, null);
@@ -135,16 +137,16 @@ public abstract class MappableAnnotationPanel extends AnnotationPanel {
 
 		switch (selected) {
 		case MappableAnnotationPanel.TYPE_CLASS_ANNO:
-			newPanel = new ClassAnnotationPanel(null, this.viewAnnotationLink);
+			newPanel = new ClassAnnotationPanel(this.clipboard, null, this.viewAnnotationLink);
 			break;
 		case MappableAnnotationPanel.TYPE_MAP_ANNO:
-			newPanel = new MapClassAnnotationPanel(null, this.viewAnnotationLink, options);
+			newPanel = new MapClassAnnotationPanel(this.clipboard, null, this.viewAnnotationLink, options);
 			break;
 		case MappableAnnotationPanel.TYPE_ARRAY_ANNO:
-			newPanel = new ArrayClassAnnotationPanel(null, this.viewAnnotationLink, options);
+			newPanel = new ArrayClassAnnotationPanel(this.clipboard, null, this.viewAnnotationLink, options);
 			break;
 		case MappableAnnotationPanel.TYPE_BOX_ANNO:
-			newPanel = new BoxAnnotationPanel(null, this.viewAnnotationLink);
+			newPanel = new BoxAnnotationPanel(this.clipboard, null, this.viewAnnotationLink);
 			break;
 		default:
 			throw new IllegalArgumentException("Unrecognized class: "+String.valueOf(selected));

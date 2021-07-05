@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.text.NumberFormat;
 import javax.swing.JFormattedTextField;
 import control.ViewAnnotationLink;
+import control.clipboard.AnnotationClipboard;
 import model.annotation.Annotation;
 import model.annotation.BoxAnnotation;
 import model.annotation.MapClassAnnotation;
@@ -56,9 +57,10 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 	
 	private BoxAnnotation boxAnnotation;
 
-	public BoxAnnotationPanel(ChangeEmitter changeEmitter, ViewAnnotationLink viewAnnotationLink) {
-		super(changeEmitter, viewAnnotationLink);
-		this.annotationPanel = new MapClassAnnotationPanel(this, viewAnnotationLink, MappableAnnotationPanel.TYPE_BASECLASS);
+	public BoxAnnotationPanel(AnnotationClipboard clipboard, ChangeEmitter changeEmitter, ViewAnnotationLink viewAnnotationLink) {
+		super(clipboard, changeEmitter, viewAnnotationLink);
+		
+		this.annotationPanel = new MapClassAnnotationPanel(clipboard, this, viewAnnotationLink, MappableAnnotationPanel.TYPE_BASECLASS);
 		this.boxAnnotation = null;
 		
 		this.xminFieldFormat = NumberFormat.getNumberInstance();
@@ -73,21 +75,21 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-		setLayout(gridBagLayout);
+		this.mainPanel.setLayout(gridBagLayout);
 		
 		JLabel xLabel = new JLabel("X");
 		GridBagConstraints gbc_xLabel = new GridBagConstraints();
 		gbc_xLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_xLabel.gridx = 1;
 		gbc_xLabel.gridy = 0;
-		add(xLabel, gbc_xLabel);
+		this.mainPanel.add(xLabel, gbc_xLabel);
 		
 		JLabel yLabel = new JLabel("Y");
 		GridBagConstraints gbc_yLabel = new GridBagConstraints();
 		gbc_yLabel.insets = new Insets(0, 0, 5, 0);
 		gbc_yLabel.gridx = 2;
 		gbc_yLabel.gridy = 0;
-		add(yLabel, gbc_yLabel);
+		this.mainPanel.add(yLabel, gbc_yLabel);
 		
 		JLabel minLabel = new JLabel("Minimum:");
 		GridBagConstraints gbc_minLabel = new GridBagConstraints();
@@ -95,7 +97,7 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		gbc_minLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_minLabel.gridx = 0;
 		gbc_minLabel.gridy = 1;
-		add(minLabel, gbc_minLabel);
+		this.mainPanel.add(minLabel, gbc_minLabel);
 		
 		this.xminField = new JFormattedTextField(this.xminFieldFormat);
 		this.xminListener = new CoordinateChangeListener(this);
@@ -105,7 +107,7 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		gbc_xminField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_xminField.gridx = 1;
 		gbc_xminField.gridy = 1;
-		add(this.xminField, gbc_xminField);
+		this.mainPanel.add(this.xminField, gbc_xminField);
 		
 		this.yminField = new JFormattedTextField(this.yminFieldFormat);
 		this.yminListener = new CoordinateChangeListener(this);
@@ -115,7 +117,7 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		gbc_yminField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_yminField.gridx = 2;
 		gbc_yminField.gridy = 1;
-		add(this.yminField, gbc_yminField);
+		this.mainPanel.add(this.yminField, gbc_yminField);
 		
 		JLabel maxLabel = new JLabel("Maximum:");
 		GridBagConstraints gbc_maxLabel = new GridBagConstraints();
@@ -123,7 +125,7 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		gbc_maxLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_maxLabel.gridx = 0;
 		gbc_maxLabel.gridy = 2;
-		add(maxLabel, gbc_maxLabel);
+		this.mainPanel.add(maxLabel, gbc_maxLabel);
 		
 		this.xmaxField = new JFormattedTextField(this.xmaxFieldFormat);
 		this.xmaxListener = new CoordinateChangeListener(this);
@@ -133,7 +135,7 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		gbc_xmaxField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_xmaxField.gridx = 1;
 		gbc_xmaxField.gridy = 2;
-		add(this.xmaxField, gbc_xmaxField);
+		this.mainPanel.add(this.xmaxField, gbc_xmaxField);
 		
 		this.ymaxField = new JFormattedTextField(this.ymaxFieldFormat);
 		this.ymaxListener = new CoordinateChangeListener(this);
@@ -143,7 +145,7 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		gbc_ymaxField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_ymaxField.gridx = 2;
 		gbc_ymaxField.gridy = 2;
-		add(this.ymaxField, gbc_ymaxField);
+		this.mainPanel.add(this.ymaxField, gbc_ymaxField);
 		
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.gridwidth = 3;
@@ -156,7 +158,7 @@ public class BoxAnnotationPanel extends AnnotationPanel {
 		BoxAnnotationPanel.setNumberFormatSpecifics(this.xminFieldFormat, this.xmaxField);
 		BoxAnnotationPanel.setNumberFormatSpecifics(this.xminFieldFormat, this.ymaxField);
 		
-		add(this.annotationPanel, gbc_panel);
+		this.mainPanel.add(this.annotationPanel, gbc_panel);
 		// TODO Auto-generated constructor stub
 	}
 

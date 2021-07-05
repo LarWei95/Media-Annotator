@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
+import control.clipboard.AnnotationClipboard;
 import control.framefactory.FrameFactory;
 import control.io.AnnotationWorkspace;
 import control.selection.ImageReference;
@@ -46,7 +47,7 @@ public class TestWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		this.frame = FrameFactory.getBufferedImageMainFrame();
+		this.frame = FrameFactory.getBufferedImageMainFrame(new AnnotationClipboard());
 	}
 
 }
