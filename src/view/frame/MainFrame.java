@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -32,9 +33,14 @@ import control.selection.MediaReferenceFactory;
 import control.selection.PaneledMediaContainer;
 import model.MediaType;
 import model.annotation.Annotation;
+import view.basics.MinimizablePanel;
+import view.clipboard.ClipboardPanel;
 import view.media.info.ImageInfoPanel;
 import view.media.info.MediaInfoPanel;
 import view.workspace.WorkspaceAnnotationPanel;
+import javax.swing.JInternalFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JButton;
 
 class OpenWorkspaceListener<T> implements ActionListener {
 
@@ -169,6 +175,9 @@ public class MainFrame extends JFrame {
 	private ActionContainer<?> actionContainer;
 	protected AnnotationClipboard clipboard;
 	
+	private MinimizablePanel minimizablePanel;
+	private ClipboardPanel clipboardPanel;
+	
 	private JPanel contentPane;
 	
 	private JMenuBar menuBar;
@@ -189,12 +198,25 @@ public class MainFrame extends JFrame {
 	public MainFrame(AnnotationClipboard clipboard) {
 		this.clipboard = clipboard;
 		
+		
+		this.clipboardPanel = new ClipboardPanel(this.clipboard);
+		
+		HashMap<String, JPanel> map = new HashMap<String, JPanel>();
+		map.put("Clipboard", this.clipboardPanel);
+		
+		this.minimizablePanel = new MinimizablePanel(map);
+		
+		
+		
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
+		this.contentPane.add(this.minimizablePanel, BorderLayout.EAST);
 		
 		this.initializeMenu();
 	}
@@ -216,7 +238,7 @@ public class MainFrame extends JFrame {
 	
 	protected void setCurrentElements () {
 		if (this.actionContainer != null) {
-			this.contentPane.add(this.actionContainer.workspacePanel);
+			this.contentPane.add(this.actionContainer.workspacePanel, BorderLayout.CENTER);
 			
 			this.fileSaveAsItem.addActionListener(this.actionContainer.saveAsListener);
 			this.fileSaveItem.addActionListener(this.actionContainer.saveListener);
@@ -294,7 +316,7 @@ public class MainFrame extends JFrame {
 					this.setMainFrameContainer(newContainer);
 					break;
 				}
-				this.validate();
+				this.revalidate();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

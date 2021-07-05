@@ -108,7 +108,7 @@ public class MappableHeaderPanel extends ChangeEmitterPanel {
 		gbc_typeLabel.gridy = 0;
 		add(typeLabel, gbc_typeLabel);
 		
-		JLabel nameLabel = new JLabel("Annotation identifier:");
+		JLabel nameLabel = new JLabel("Identifier:");
 		GridBagConstraints gbc_nameLabel = new GridBagConstraints();
 		gbc_nameLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_nameLabel.anchor = GridBagConstraints.EAST;
