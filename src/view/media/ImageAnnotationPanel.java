@@ -3,6 +3,8 @@ package view.media;
 import control.ViewAnnotationLink;
 import control.annotation.editor.RectangleEditor;
 import control.clipboard.AnnotationClipboard;
+import control.selection.MediaReference;
+import model.Marking;
 import model.annotation.Annotation;
 import view.ChangeEmitter;
 import view.annotation.types.MapClassAnnotationPanel;
@@ -20,6 +22,7 @@ public class ImageAnnotationPanel extends MediaAnnotationPanel<BufferedImage> {
 	private MapClassAnnotationPanel panel;
 	private RectangleEditor rectEditor;
 	private ImageViewer imagePanel;
+	private MarkingPanel markingPanel;
 	
 	/**
 	 * Create the panel.
@@ -43,17 +46,35 @@ public class ImageAnnotationPanel extends MediaAnnotationPanel<BufferedImage> {
 
 			@Override
 			public ChangeEmitter getSuperChangeEmitter() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public void setSuperChangeEmitter(ChangeEmitter changeEmitter) {
-				// TODO Auto-generated method stub
-				
+				// Nothing
 			}
 			
 		}, link, MappableAnnotationPanel.TYPE_ALL);
+		
+		this.markingPanel = new MarkingPanel(new ChangeEmitter () {
+			@Override
+			public void updateOnForwardedChange() {
+				Marking selected = markingPanel.getMarking();
+				setMarking(selected);
+			}
+
+			@Override
+			public ChangeEmitter getSuperChangeEmitter() {
+				return null;
+			}
+
+			@Override
+			public void setSuperChangeEmitter(ChangeEmitter changeEmitter) {
+				// Nothing
+			}
+		});
+		this.add(this.markingPanel, BorderLayout.NORTH);
+		
 		link.setRootAnnotationPanel(this.panel);
 		this.add(this.panel, BorderLayout.EAST);
 	}
@@ -68,9 +89,14 @@ public class ImageAnnotationPanel extends MediaAnnotationPanel<BufferedImage> {
 		this.panel.setAnnotation(annotation);
 	}
 
+	protected void setMarking (Marking marking) {
+		System.out.println(marking);
+	}
+	
 	@Override
-	public void setMedia(BufferedImage media) {
-		this.imagePanel.setMedia(media);
+	public void setMediaReference(MediaReference<BufferedImage> media) {
+		this.imagePanel.setMedia(media.getMediaLoaded());
+		this.markingPanel.setMarking(media.getMarking());
 	}
 
 	@Override

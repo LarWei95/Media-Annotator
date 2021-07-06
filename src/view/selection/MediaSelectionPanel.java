@@ -1,6 +1,7 @@
 package view.selection;
 
 import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 
 import control.selection.PaneledMediaContainer;
@@ -8,9 +9,12 @@ import control.selection.SelectionMediaContainer;
 import control.selection.MediaReference;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.nio.file.Path;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
@@ -41,6 +45,8 @@ public class MediaSelectionPanel<T> extends JPanel {
 	private JList<String> mediaList ;
 	private MediaSelectionListener listener;
 	
+	private MarkingCellRenderer cellRenderer;
+	
 	/**
 	 * Create the panel.
 	 */
@@ -55,6 +61,9 @@ public class MediaSelectionPanel<T> extends JPanel {
 		this.mediaList.addListSelectionListener(this.listener);
 		this.mediaList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		add(this.mediaList, BorderLayout.CENTER);
+		
+		this.cellRenderer = new MarkingCellRenderer(this.mediaContainer);
+		
 		this.updateList();
 	}
 	
@@ -84,6 +93,7 @@ public class MediaSelectionPanel<T> extends JPanel {
 			}
 		}
 		this.listener.active = false;
+		this.mediaList.setCellRenderer(this.cellRenderer);
 		this.mediaList.setModel(newListModel);
 		this.mediaList.setSelectedIndex(this.mediaContainer.getMediaIndex());
 		this.listener.active = true;

@@ -55,7 +55,7 @@ public class PaneledMediaContainer<T> extends SelectionMediaContainer<T>{
 		
 		if (index != -1) {
 			this.annotator.setAnnotation(this.annotations.get(index));
-			this.annotator.setMedia(this.medias.get(index).getMediaLoaded());
+			this.annotator.setMediaReference(this.medias.get(index));
 			super.setSelectedMedia(index);
 		}
 		

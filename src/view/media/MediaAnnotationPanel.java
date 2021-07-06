@@ -2,6 +2,7 @@ package view.media;
 
 import javax.swing.JPanel;
 
+import control.selection.MediaReference;
 import model.annotation.Annotation;
 
 public abstract class  MediaAnnotationPanel<T> extends JPanel{
@@ -14,7 +15,7 @@ public abstract class  MediaAnnotationPanel<T> extends JPanel{
 	
 	public abstract void setAnnotation (Annotation annotation);
 	
-	public abstract void setMedia (T media);
+	public abstract void setMediaReference (MediaReference<T> media);
 	
 	public abstract void clear ();
 }

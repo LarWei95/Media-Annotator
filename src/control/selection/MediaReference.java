@@ -5,17 +5,21 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 
+import model.Marking;
+
 public abstract class MediaReference<T> {
 	private Path path;
 	private T media;
 	
 	private String checksum;
+	private Marking marking;
 	
 	public MediaReference (Path path){
 		this.path = path;
 		
 		this.media = null;
 		this.checksum = null;
+		this.marking = Marking.NONE;
 	}
 	
 	public MediaReference (Path path, String checksum){
@@ -23,6 +27,23 @@ public abstract class MediaReference<T> {
 		
 		this.media = null;
 		this.checksum = checksum;
+		this.marking = Marking.NONE;
+	}
+	
+	public MediaReference (Path path, String checksum, Marking marking){
+		this.path = path;
+		
+		this.media = null;
+		this.checksum = checksum;
+		this.marking = marking;
+	}
+	
+	public Marking getMarking () {
+		return this.marking;
+	}
+	
+	public void setMarkin (Marking marking) {
+		this.marking = marking;
 	}
 	
 	public Path getPath () {
