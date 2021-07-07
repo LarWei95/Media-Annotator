@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import model.Marking;
 import model.MediaType;
 import model.annotation.Annotation;
 
@@ -15,22 +16,30 @@ public abstract class MediaReferenceFactory<T> {
 	
 	public abstract MediaReference<T> generateByPath (Path path, String hash);
 	
+	public abstract MediaReference<T> generateByPath (Path path, String hash, Marking marking);
+	
 	public abstract MediaType getMediaType ();
 	
-	public MediaContainer<T> ofCollections (Map<Path, String> hashes, Map<Path, Annotation> annotations, List<Path> order) {
+	public MediaContainer<T> ofCollections (Map<Path, String> hashes, Map<Path, Annotation> annotations, List<Path> order,
+			List<Marking> markings) {
 		MediaType mediaType = this.getMediaType();
 		
 		ArrayList<MediaReference<T>> finalMedias = new ArrayList<MediaReference<T>>(annotations.size());
 		ArrayList<Annotation> finalAnnotations = new ArrayList<Annotation>(hashes.size());
 		
+		Path annotationPath;
 		Annotation currentAnnotation;
 		String currentHash;
+		Marking currentMarking;
 		
-		for (Path annotationPath:order) {
+		for (int i = 0; i < order.size(); i++) {
+			annotationPath = order.get(i);
+			
 			currentAnnotation = annotations.get(annotationPath);
 			currentHash = hashes.getOrDefault(annotationPath, null);
+			currentMarking = markings.get(i);
 			
-			finalMedias.add(this.generateByPath(annotationPath, currentHash));
+			finalMedias.add(this.generateByPath(annotationPath, currentHash, currentMarking));
 			finalAnnotations.add(currentAnnotation);
 		}
 		
@@ -69,6 +78,11 @@ class ImageReferenceFactory extends MediaReferenceFactory<BufferedImage> {
 	@Override
 	public MediaType getMediaType() {
 		return MediaType.IMAGE;
+	}
+
+	@Override
+	public MediaReference<BufferedImage> generateByPath(Path path, String hash, Marking marking) {
+		return new ImageReference(path, hash, marking);
 	}
 	
 }

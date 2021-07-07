@@ -22,6 +22,7 @@ import control.clipboard.AnnotationClipboard;
 import control.selection.MediaContainer;
 import control.selection.MediaReference;
 import control.selection.MediaReferenceFactory;
+import model.Marking;
 import model.MediaType;
 import model.annotation.Annotation;
 import model.annotation.ArrayClassAnnotation;
@@ -35,11 +36,10 @@ public class AnnotationIO {
 	
 	public static final String KEY_METADATA_MEDIATYPE = "mediatype";
 	public static final String KEY_METADATA_ORDER = "order";
-	public static final String KEY_METADATA_MD5 = "md5";	
-	public static final String KEY_METADATA_CLIPBOARD = "clipboard";
+	public static final String KEY_METADATA_MD5 = "md5";
+	public static final String KEY_METADATA_MARKINGS = "markings";
 	
 	public static <T> void save (AnnotationWorkspace<T> workspace, File outPath, boolean useAbsolutePaths) throws IOException {
-		// List<MediaReference<T>> medias, List<Annotation> annotations, MediaType mediaType
 		List<MediaReference<T>> medias = workspace.getMediaContainer().getMedias();
 		List<Annotation> annotations = workspace.getMediaContainer().getAnnotations();
 		MediaType mediaType = workspace.getMediaContainer().getMediaType();
@@ -68,6 +68,7 @@ public class AnnotationIO {
 		
 		JsonObject md5s = new JsonObject();
 		JsonArray order = new JsonArray();
+		JsonArray markings = new JsonArray();
 		
 		String absPath;
 		
@@ -76,10 +77,12 @@ public class AnnotationIO {
 			
 			md5s.put(absPath, media.getChecksum());
 			order.add(absPath);
+			markings.add(media.getMarking().toString());
 		}
 		
 		metadata.put(AnnotationIO.KEY_METADATA_MD5, md5s);
 		metadata.put(AnnotationIO.KEY_METADATA_ORDER, order);
+		metadata.put(AnnotationIO.KEY_METADATA_MARKINGS, markings);
 		
 		return metadata;
 	}
@@ -215,6 +218,31 @@ public class AnnotationIO {
 		return paths;
 	}
 	
+	public static ArrayList<Marking> getMarkings (JsonObject metadata, int pathCount) {
+		JsonArray markings = (JsonArray) metadata.getOrDefault(AnnotationIO.KEY_METADATA_MARKINGS, null);
+		ArrayList<Marking> markingsArray;
+		
+		if (markings == null) {
+			markingsArray = new ArrayList<Marking>(pathCount);
+			
+			for (int i = 0; i < pathCount; i++) {
+				markingsArray.add(Marking.NONE);
+			}
+		} else {
+			if (pathCount != markings.size()) {
+				throw new IllegalArgumentException("Unequal array length: "+pathCount+" "+markings.size());
+			}
+			
+			markingsArray = new ArrayList<Marking>(pathCount);
+			
+			for (int i = 0; i < pathCount; i++) {
+				markingsArray.add(Marking.ofString((String) markings.get(i)));
+			}
+		}
+		
+		return markingsArray;
+	}
+	
 	public static MediaContainer<?> load (File inPath) throws IOException, JsonException {
 		BufferedReader reader = new BufferedReader(new FileReader(inPath));
 		
@@ -226,10 +254,11 @@ public class AnnotationIO {
 		HashMap<Path, String> hashes = AnnotationIO.getHashes(metadata);
 		HashMap<Path, Annotation> annotations = parseAnnotationDict(annotationDict);
 		ArrayList<Path> order = getOrder(metadata);
+		ArrayList<Marking> markings = getMarkings(metadata, order.size());
 		
 		switch (mediaType) {
 		case MediaType.IMAGE_STRING:
-			return MediaReferenceFactory.getImageInstance().ofCollections(hashes, annotations, order);
+			return MediaReferenceFactory.getImageInstance().ofCollections(hashes, annotations, order, markings);
 			default:
 				String errMsg = "The media type could not be used: "+mediaType;
 				throw new IllegalArgumentException(errMsg);
