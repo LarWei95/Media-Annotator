@@ -99,7 +99,7 @@ class SaveWorkspaceListener extends AnnotationWorkspaceListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			this.workspace.saveAs();
+			this.workspace.save();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

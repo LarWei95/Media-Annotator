@@ -12,6 +12,7 @@ import view.annotation.types.MappableAnnotationPanel;
 import view.viewer.image.ImageViewer;
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class ImageAnnotationPanel extends MediaAnnotationPanel<BufferedImage> {
 
@@ -90,13 +91,28 @@ public class ImageAnnotationPanel extends MediaAnnotationPanel<BufferedImage> {
 	}
 
 	protected void setMarking (Marking marking) {
-		System.out.println(marking);
+		if (!this.multiView) {
+			if (this.media != null) {
+				this.media.setMarking(marking);
+			}
+		} else {
+			for (MediaReference<BufferedImage> media: this.medias) {
+				media.setMarking(marking);
+			}
+		}
 	}
 	
 	@Override
 	public void setMediaReference(MediaReference<BufferedImage> media) {
+		super.setMediaReference(media);
 		this.imagePanel.setMedia(media.getMediaLoaded());
 		this.markingPanel.setMarking(media.getMarking());
+	}
+	
+	@Override
+	public void setMediaReferences (List<MediaReference<BufferedImage>> medias) {
+		super.setMediaReferences(medias);
+		this.markingPanel.setMarking(Marking.NONE);
 	}
 
 	@Override

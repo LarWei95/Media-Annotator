@@ -48,8 +48,11 @@ public class PaneledMediaContainer<T> extends SelectionMediaContainer<T>{
 		}
 	}
 	
+	@Override
 	public void setSelectedMedia (int index) {
-		this.updateCurrentAnnotation();
+		if (this.annotator.inMultiView() == false) {
+			this.updateCurrentAnnotation();
+		}
 		
 		this.annotator.clear();
 		
@@ -58,6 +61,23 @@ public class PaneledMediaContainer<T> extends SelectionMediaContainer<T>{
 			this.annotator.setMediaReference(this.medias.get(index));
 			super.setSelectedMedia(index);
 		}
+	}
+	
+	@Override
+	public void setSelectedMedias (int[] indices) {
+		if (this.annotator.inMultiView() == false) {
+			this.updateCurrentAnnotation();
+		}
 		
+		this.annotator.clear();
+		
+		ArrayList<MediaReference<T>> medias = new ArrayList<MediaReference<T>>(indices.length);
+		
+		for (int ind: indices) {
+			medias.add(this.medias.get(ind));
+		}
+		
+		this.annotator.setMediaReferences(medias);
+		super.setSelectedMedias(indices);
 	}
 }

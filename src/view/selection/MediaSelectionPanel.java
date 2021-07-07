@@ -59,7 +59,7 @@ public class MediaSelectionPanel<T> extends JPanel {
 		this.listener = new MediaSelectionListener(this);
 		
 		this.mediaList.addListSelectionListener(this.listener);
-		this.mediaList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		this.mediaList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		add(this.mediaList, BorderLayout.CENTER);
 		
 		this.cellRenderer = new MarkingCellRenderer(this.mediaContainer);
@@ -106,9 +106,13 @@ public class MediaSelectionPanel<T> extends JPanel {
 	}
 	
 	public void updateSelection () {
-		int index = this.mediaList.getSelectedIndex();
-		System.out.println(index);
+		int[] indices = this.mediaList.getSelectedIndices();
 		
-		this.mediaContainer.setSelectedMedia(index);
+		if (indices.length == 1) {
+			this.mediaContainer.setSelectedMedia(indices[0]);
+		} else {
+			this.mediaContainer.setSelectedMedias(indices);
+		}
+		
 	}
 }

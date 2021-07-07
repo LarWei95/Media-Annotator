@@ -44,12 +44,14 @@ public class AnnotationWorkspace<T> {
 		
 		if (ret == JFileChooser.APPROVE_OPTION) {
 			File file = chooser.getSelectedFile();
+			
 			this.saveToPath(file);
 			this.savePath = file.toPath();
 		}
 	}
 	
 	public void save () throws IOException {
+		System.out.println("Save has been called: "+this.savePath);
 		if (this.savePath != null) {
 			this.saveToPath(this.savePath.toFile());
 		} else {

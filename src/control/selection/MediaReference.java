@@ -42,7 +42,7 @@ public abstract class MediaReference<T> {
 		return this.marking;
 	}
 	
-	public void setMarkin (Marking marking) {
+	public void setMarking (Marking marking) {
 		this.marking = marking;
 	}
 	
